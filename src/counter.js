@@ -2,10 +2,7 @@ import React from "react";
 import { Component, Store } from "reactive-magic";
 
 export default class Counter extends Component {
-  constructor(props) {
-    super(props);
-    this.store = Store({ count: 0 });
-  }
+  store = Store({ count: 0 });
 
   increment = () => {
     this.store.count += 1;
