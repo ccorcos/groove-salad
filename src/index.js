@@ -5,13 +5,28 @@ import { css } from "glamor";
 import { Component, Store } from "reactive-magic";
 
 // TODO
-// - zoom, move, drag on canvas
-// -
+// - keyboard play notes -- start all on and map to numbers with label
+// - persist scale store to localStorage
+// - "select chord" block (maj5, minor7, etc.)
+// - "play chord", "play arpegio" -- keyboard mode
+// - "sequencer" block -- general purpose!
+
+// - create blocks, wire them up, switches, keymaps, select active play block
+
+// - "samples" block
+// - better global layout
+// - drag and drop root marker
 
 css.global("html, body", {
   padding: 0,
   margin: 0,
   overflow: "hidden"
+});
+
+const noScrollbar = css({
+  "::-webkit-scrollbar": {
+    display: "none"
+  }
 });
 
 // normalize x with respect to the rect
@@ -21,8 +36,10 @@ const _z = (z, r) => z * r.z;
 const _w = (w, r) => w * r.w;
 const _h = (h, r) => h * r.h;
 
+const ScaleStore = Store({ notes: Array(12).fill(false) });
+
 export default class Scale extends Component {
-  store = Store({ notes: Array(12).fill(false) });
+  store = ScaleStore;
 
   constructor(props) {
     super(props);
@@ -34,40 +51,76 @@ export default class Scale extends Component {
       });
   }
 
+  didMount() {
+    this.root.scrollLeft = this.root.scrollWidth / 2 - 800 / 2;
+  }
+
   static defaultProps = {
-    octaves: 1,
-    rect: { x: 0.25, y: 0, z: 1, w: 0.5, h: 0.1 }
+    octaves: 5
+  };
+
+  refRoot = node => {
+    this.root = node;
   };
 
   view({ octaves, rect }) {
     const length = octaves * 12;
     return (
-      <svg height="100vh" width="100vw" viewBox="0 0 1 1" overflow="scroll">
-        <rect
-          x={rect.x}
-          width={_w(1, rect)}
-          height={_h(1, rect)}
-          stroke="black"
-          strokeWidth={_z(0.002, rect)}
-          fill="transparent"
-        />
+      <div
+        ref={this.refRoot}
+        className={noScrollbar}
+        style={{
+          width: 800,
+          border: "1px solid black",
+          borderRadius: 4,
+          display: "flex",
+          padding: "32px 8px 8px 8px",
+          overflowX: "scroll"
+        }}
+      >
+        <div style={{ position: "absolute", top: 4, left: 8 }}>
+          select scale
+        </div>
         {R.range(0, length).map(i => {
+          const arrow = i % 12 === 0
+            ? <div
+                style={{
+                  position: "absolute",
+                  bottom: "100%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: 0,
+                  height: 0,
+                  borderLeft: "5px solid transparent",
+                  borderRight: "5px solid transparent",
+                  borderTop: "10px solid red"
+                }}
+              />
+            : null;
+
           return (
-            <circle
+            <div
               key={i}
-              cx={_x(i / (length - 1), rect)}
-              cy={_y(0.5, rect)}
-              r={_z(0.01, rect)}
-              stroke="black"
-              strokeWidth={_z(0.002, rect)}
-              fill={
-                this.store.notes[i] ? "rgb(85, 233, 158)" : "rgb(190, 196, 193)"
-              }
-              onClick={this.onToggles[i]}
-            />
+              style={{
+                flexShrink: 0,
+                marginLeft: 8,
+                marginRight: 8,
+                height: 20,
+                width: 20,
+                backgroundColor: this.store.notes[i % 12]
+                  ? "rgb(85, 233, 158)"
+                  : "rgb(190, 196, 193)",
+                border: "1px solid black",
+                borderRadius: "100%",
+                position: "relative"
+              }}
+              onClick={this.onToggles[i % 12]}
+            >
+              {arrow}
+            </div>
           );
         })}
-      </svg>
+      </div>
     );
   }
 }
