@@ -1,7 +1,7 @@
 {
-  "name": "reactive-magic-example",
+  "name": "groove",
   "version": "0.0.1",
-  "description": "reactive-magic example React application",
+  "description": "",
   "scripts": {
     "start": "webpack-dev-server --content-base dist",
     "build": "webpack -p",

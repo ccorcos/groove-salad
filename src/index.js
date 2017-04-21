@@ -4,19 +4,6 @@ import R from "ramda";
 import { css } from "glamor";
 import { Component, Store } from "reactive-magic";
 
-// TODO
-// - keyboard play notes -- start all on and map to numbers with label
-// - persist scale store to localStorage
-// - "select chord" block (maj5, minor7, etc.)
-// - "play chord", "play arpegio" -- keyboard mode
-// - "sequencer" block -- general purpose!
-
-// - create blocks, wire them up, switches, keymaps, select active play block
-
-// - "samples" block
-// - better global layout
-// - drag and drop root marker
-
 css.global("html, body", {
   padding: 0,
   margin: 0,
