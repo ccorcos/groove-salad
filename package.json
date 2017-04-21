@@ -12,6 +12,9 @@
   "author": "Chet Corcos <ccorcos@gmail.com> (http://www.chetcorcos.com/)",
   "license": "MIT",
   "dependencies": {
+    "glamor": "^2.20.24",
+    "lodash": "^4.17.4",
+    "ramda": "^0.23.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "reactive-magic": "^0.2.0"
