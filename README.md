@@ -1,5 +1,15 @@
 # Groove
 
+## Getting Started
+
+```sh
+git clone git@github.com:ccorcos/groove.git
+cd groove
+npm install
+start
+open http://localhost:8080/
+```
+
 ## To Do
 - keyboard play notes -- start all on for and map to numbers with label
 - persist scale store to localStorage
