@@ -82,28 +82,24 @@ export default class Pie extends Component {
     };
   }
 
-  // WARNRING: this function is fucking gnarly
-  // given an angle
+  // WARNING: this function is fucking gnarly
+  // given an angle (in radians) and the offset that we're currently snapped to in the scale, we need to determine the closest note thats in the scale that we can snap to, accounting for the rotation so we can go up and down octaves
+  // REMEMBER: +offset is -angle
   onSnap = angle => {
-    if (angle === 0) {
-      return angle;
-    }
     const { scaleStore } = this.props;
-    // REMEMBER: +offset is -angle
-    // Find the closest note
-    // Distance to the closest note is [-6, 6]
-    let distance = 99;
-    // Closest note should default to the current offset
-    let closest = modPos(scaleStore.offset, 12);
-    // arc length
+    // We know the arclength of each piece of pie
     const arc = 2 * Math.PI / 12;
-    // normalize the angle relative to the offset angle.
+    // A +offset is a -angle, so we can find the normalized angle
     const normA = angle + scaleStore.offset * arc;
+    // To find the closest not, we need to do some modular math. The distance of normA to the note of interest will be computed to the range of [-pi, +pi] so we can compare distances and add this distance to the angle to get the place to snap to
+    let distance = 99;
+    // Closest note should start at the previous offset index. modPos will take the offset and return something in the range of [0, 11]
+    let closest = modPos(scaleStore.offset, 12);
     scaleStore.notes.forEach((on, i) => {
       if (on) {
-        // normalize i by the offset so the offset appears at angle 0
+        // Normalize i by the offset, so an offset of 3 at and index of 3 is a normI of 0 and an offset of 3 at an index of 1 is 10.
         const normI = modPos(modMinus(i, scaleStore.offset, 12), 12);
-        // compute the distance to the note
+        // Compute the distance to a note
         const dist = modMinus(normA, -normI * arc, 2 * Math.PI);
         if (Math.abs(dist) < Math.abs(distance)) {
           distance = dist;
@@ -111,13 +107,14 @@ export default class Pie extends Component {
         }
       }
     });
-
+    // If we don't have any notes on, then nap back to the previous offset
     if (distance === 99) {
       return -scaleStore.offset * arc;
     }
-
-    const offset = Math.round((-angle + distance) / 2 / Math.PI * 12);
+    // Add the distance to the closest note to the angle, and then divide by the arc length to get the offset. We'll round due to floating point precision
+    const offset = Math.round((-angle + distance) / arc);
     scaleStore.offset = offset;
+    // Snap to the offset!
     return -scaleStore.offset * arc;
   };
 
