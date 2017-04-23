@@ -18,7 +18,7 @@ export default class Keyboard extends Component {
       width: 48,
       margin: 8,
       borderRadius: 4,
-      backgroundColor: ColorStore.primary
+      backgroundColor: ColorStore.blue
     };
   }
 

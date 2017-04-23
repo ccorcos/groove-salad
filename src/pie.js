@@ -4,6 +4,9 @@ import Playable from "./playable";
 import Rotatable from "./rotatable";
 import ColorStore from "./color";
 
+// padding of the outer ring for spinning
+const padding = 0.4;
+
 export default class ScalePie extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +15,6 @@ export default class ScalePie extends Component {
       event => {
         scaleStore.notes[i] = !scaleStore.notes[i];
         scaleStore.notes = scaleStore.notes;
-        return;
       });
   }
 
@@ -47,8 +49,7 @@ export default class ScalePie extends Component {
               <path
                 onClick={this.onToggles[i]}
                 d={notePathData}
-                fill={ColorStore.primary}
-                opacity={on ? 1 : 0.1}
+                fill={on ? ColorStore.blue : ColorStore.gray}
               />
             }
           />,
@@ -56,10 +57,17 @@ export default class ScalePie extends Component {
         ];
       })
       .reduce((acc, list) => acc.concat(list), []);
+
+    // origin
+    const o = -1 - padding;
+    // side length
+    const l = 2 + padding * 2;
     return (
       <Rotatable
+        filterTarget={target => target.tagName === "circle"}
         element={
-          <svg style={ScalePie.svgStyle} viewBox="-1 -1 2 2">
+          <svg style={ScalePie.svgStyle} viewBox={`${o} ${o} ${l} ${l}`}>
+            <circle cx="0" cy="0" r={l / 2} fill="red" />
             {slices}
           </svg>
         }

@@ -12,9 +12,13 @@ open http://localhost:8080/
 
 ## To Do
 
+- rotatable prevents click
+- onMouseOut events
+- polysynth
+- slidable
+
 - synth with multiple notes
 - display where you're holding down a note or not
-- rotatable circle
 - rotatable keyboard
 
 

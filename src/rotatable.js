@@ -30,9 +30,7 @@ export default class Rotatable extends Component {
     down: false,
     offset: 0,
     prev: { x: null, y: null },
-    current: { x: null, y: null },
-    velocity: 0,
-    dampening: 0.1
+    current: { x: null, y: null }
   });
 
   propagateEvent(name, ...args) {
@@ -44,13 +42,17 @@ export default class Rotatable extends Component {
 
   handleMouseDown = e => {
     this.propagateEvent("onMouseDown");
+    if (this.props.filterTarget) {
+      if (!this.props.filterTarget(e.target)) {
+        return;
+      }
+    }
     const rotateStore = this.rotateStore;
     rotateStore.down = true;
     rotateStore.prev.x = e.pageX;
     rotateStore.prev.y = e.pageY;
     rotateStore.current.x = e.pageX;
     rotateStore.current.y = e.pageY;
-    rotateStore.velocity = 0;
   };
 
   handleMouseMove = e => {
@@ -61,7 +63,6 @@ export default class Rotatable extends Component {
       rotateStore.prev.y = rotateStore.current.y;
       rotateStore.current.x = e.pageX;
       rotateStore.current.y = e.pageY;
-      rotateStore.velocity = 0;
 
       const rect = e.currentTarget.getBoundingClientRect();
       const p1 = polarize(rotateStore.prev, rect);
@@ -80,7 +81,6 @@ export default class Rotatable extends Component {
       rotateStore.prev.y = null;
       rotateStore.current.x = null;
       rotateStore.current.y = null;
-      rotateStore.velocity = 0;
     }
   };
 
@@ -115,7 +115,6 @@ export default class Rotatable extends Component {
       ...props
     } = this.props;
     const style = this.getStyle();
-    console.log(style.transform);
     return React.cloneElement(this.props.element, {
       ...props,
       onMouseDown: this.handleMouseDown,
