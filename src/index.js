@@ -19,7 +19,10 @@ const noScrollbar = css({
   }
 });
 
-const ScaleStore = Store({ notes: Array(12).fill(false) });
+const ScaleStore = Store({
+  base: 60,
+  notes: Array(12).fill(false)
+});
 
 export default class App extends Component {
   view() {

@@ -1,6 +1,7 @@
 import React from "react";
 import { Component, Store } from "reactive-magic";
 import Playable from "./playable";
+import Rotatable from "./rotatable";
 import ColorStore from "./color";
 
 export default class ScalePie extends Component {
@@ -41,7 +42,7 @@ export default class ScalePie extends Component {
         return [
           <Playable
             key={i}
-            note={i + 50}
+            note={i + scaleStore.base}
             element={
               <path
                 onClick={this.onToggles[i]}
@@ -56,9 +57,13 @@ export default class ScalePie extends Component {
       })
       .reduce((acc, list) => acc.concat(list), []);
     return (
-      <svg style={ScalePie.svgStyle} viewBox="-1 -1 2 2">
-        {slices}
-      </svg>
+      <Rotatable
+        element={
+          <svg style={ScalePie.svgStyle} viewBox="-1 -1 2 2">
+            {slices}
+          </svg>
+        }
+      />
     );
   }
 

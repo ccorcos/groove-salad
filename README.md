@@ -11,6 +11,15 @@ open http://localhost:8080/
 ```
 
 ## To Do
+
+- synth with multiple notes
+- display where you're holding down a note or not
+- rotatable circle
+- rotatable keyboard
+
+
+---
+
 - keyboard play notes -- start all on for and map to numbers with label
 - persist scale store to localStorage
 - "select chord" block (maj5, minor7, etc.)

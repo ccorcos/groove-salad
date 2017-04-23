@@ -2,8 +2,20 @@ import React from "react";
 import Tone from "tone";
 import { Component, Store } from "reactive-magic";
 
-const synth = new Tone.AMSynth().toMaster();
-// const SynthStore = Store({ synth: new Tone.AMSynth().toMaster() });
+const freeverb = new Tone.Freeverb({
+  roomSize: 0.90,
+  dampening: 30000
+}).toMaster();
+
+var filter = new Tone.Filter({
+  type: "lowpass",
+  frequency: 250,
+  rolloff: -24, // -12, -24, -48 or -96
+  Q: 1,
+  gain: 0
+}).connect(freeverb);
+
+const synth = new Tone.MonoSynth().connect(filter);
 
 const numberToLetter = n => {
   const letter = [
@@ -39,7 +51,6 @@ export default class Playable extends Component {
 
   willUnmount() {
     this.stopKeyboardListener();
-    console.log("unmount playable");
   }
 
   startKeyboardListener = () => {
@@ -80,16 +91,34 @@ export default class Playable extends Component {
     }
   };
 
-  handleMouseDown = () => {
+  propagateEvent(name, ...args) {
+    const propagate = this.props[name];
+    if (propagate) {
+      propagate(...args);
+    }
+  }
+
+  handleMouseDown = e => {
+    this.propagateEvent("onMouseDown", e);
     synth.triggerAttack(numberToLetter(this.props.note));
   };
 
-  handleMouseUp = () => {
+  handleMouseUp = e => {
+    this.propagateEvent("onMouseUp", e);
     synth.triggerRelease();
   };
 
-  render() {
+  view(
+    {
+      character,
+      nth,
+      element,
+      note,
+      ...props
+    }
+  ) {
     return React.cloneElement(this.props.element, {
+      ...props,
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp
     });

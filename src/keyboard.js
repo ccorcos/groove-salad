@@ -14,8 +14,8 @@ export default class Keyboard extends Component {
 
   getKeyButtonStyle() {
     return {
-      height: 120,
-      width: 80,
+      height: 80,
+      width: 48,
       margin: 8,
       borderRadius: 4,
       backgroundColor: ColorStore.primary
