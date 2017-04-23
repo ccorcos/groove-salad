@@ -31,7 +31,7 @@ export default class Layout extends Component {
   view(props) {
     return (
       <div style={this.getStyle()}>
-        <div style={{ flex: 1 }}>
+        <div style={{ padding: 8 }}>
           {props.circle}
         </div>
         <div style={{ flex: 1 }}>

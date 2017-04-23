@@ -41,7 +41,6 @@ export default class ScalePie extends Component {
         return [
           <Playable
             key={i}
-            nth={i}
             note={i + 50}
             element={
               <path

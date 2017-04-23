@@ -8,9 +8,7 @@ export default class Keyboard extends Component {
   getKeyboardStyle() {
     return {
       flex: 1,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
+      display: "flex"
     };
   }
 
@@ -35,10 +33,10 @@ export default class Keyboard extends Component {
         },
         []
       )
-      .map(i => (
+      .map((i, n) => (
         <Playable
           key={i}
-          nth={i}
+          nth={n}
           note={i + 50}
           element={<div style={this.getKeyButtonStyle()} />}
         />
