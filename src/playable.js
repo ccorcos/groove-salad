@@ -31,40 +31,40 @@ export default class Playable extends Component {
   //   element: <div/>
   // };
 
-  // willMount() {
-  //   this.startKeyboardListener();
-  // }
-  //
-  // willUnmount() {
-  //   this.stopKeyboardListener();
-  //   console.log("unmount playable");
-  // }
-  //
-  // startKeyboardListener = () => {
-  //   window.addEventListener("keydown", this.handleKeyDown);
-  //   window.addEventListener("keyup", this.handleKeyUp);
-  // };
-  //
-  // stopKeyboardListener = () => {
-  //   window.removeEventListener("keydown", this.handleKeyDown);
-  //   window.removeEventListener("keyup", this.handleKeyUp);
-  // };
-  //
-  // handleKeyDown = e => {
-  //   if (this.props.character) {
-  //     if (e.code === `Key${this.props.character.toUpperCase()}`) {
-  //       this.handleMouseDown();
-  //     }
-  //   }
-  // };
-  //
-  // handleKeyUp = e => {
-  //   if (this.props.character) {
-  //     if (e.code === `Key${this.props.character.toUpperCase()}`) {
-  //       this.handleMouseUp();
-  //     }
-  //   }
-  // };
+  willMount() {
+    this.startKeyboardListener();
+  }
+
+  willUnmount() {
+    this.stopKeyboardListener();
+    console.log("unmount playable");
+  }
+
+  startKeyboardListener = () => {
+    window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp);
+  };
+
+  stopKeyboardListener = () => {
+    window.removeEventListener("keydown", this.handleKeyDown);
+    window.removeEventListener("keyup", this.handleKeyUp);
+  };
+
+  handleKeyDown = e => {
+    if (this.props.character) {
+      if (e.code === `Key${this.props.character.toUpperCase()}`) {
+        this.handleMouseDown();
+      }
+    }
+  };
+
+  handleKeyUp = e => {
+    if (this.props.character) {
+      if (e.code === `Key${this.props.character.toUpperCase()}`) {
+        this.handleMouseUp();
+      }
+    }
+  };
 
   handleMouseDown = () => {
     synth.triggerAttack(numberToLetter(this.props.note));

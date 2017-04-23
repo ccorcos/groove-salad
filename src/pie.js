@@ -42,16 +42,18 @@ export default class ScalePie extends Component {
         return [
           <Playable
             key={i}
+            character={keyboard[i]}
             note={i + 50}
             element={
               <path
                 onClick={this.onToggles[i]}
                 d={notePathData}
-                fill={on ? "CornflowerBlue" : "white"}
+                fill={"CornflowerBlue"}
+                opacity={on ? 1 : 0.1}
               />
             }
           />,
-          <path key={-i - 1} d={spacePathData} fill="black" />
+          <path key={-i - 1} d={spacePathData} fill="transparent" />
         ];
       })
       .reduce((acc, list) => acc.concat(list), []);
