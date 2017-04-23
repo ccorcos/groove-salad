@@ -1,5 +1,6 @@
 import React from "react";
 import { Component, Store } from "reactive-magic";
+import { modMinus } from "./utils/mod-math";
 
 // const ParamStore = Store({
 //   value: 0,
@@ -73,7 +74,7 @@ export default class Rotatable extends Component {
       const rect = e.currentTarget.getBoundingClientRect();
       const p1 = polarize(rotateStore.prev, rect);
       const p2 = polarize(rotateStore.current, rect);
-      const da = p2.a - p1.a;
+      const da = modMinus(p2.a, p1.a, 2 * Math.PI);
       rotateStore.offset += da;
     }
   };

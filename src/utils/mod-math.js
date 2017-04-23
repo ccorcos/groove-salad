@@ -44,6 +44,10 @@ export const modMinus = (x, y, base) => {
   return distance;
 };
 
+export const modPlus = (x, y, base) => {
+  return modMinus(x, -y);
+};
+
 // export const modMinusPos = (x, y, base) => {
 //   let distance = modMinus(x, y, base);
 //   if (distance < 0) {

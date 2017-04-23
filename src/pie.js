@@ -3,8 +3,7 @@ import { Component, Store } from "reactive-magic";
 import Playable from "./playable";
 import Rotatable from "./rotatable";
 import ColorStore from "./stores/color";
-import * as actions from "./actions";
-import { modPos, modMinus } from "./utils/mod-math";
+import { modPos, modMinus, modPlus } from "./utils/mod-math";
 
 // padding of the outer ring for spinning
 const padding = 0.4;
@@ -83,11 +82,43 @@ export default class Pie extends Component {
     };
   }
 
+  // WARNRING: this function is fucking gnarly
+  // given an angle
   onSnap = angle => {
+    if (angle === 0) {
+      return angle;
+    }
     const { scaleStore } = this.props;
-    actions.rotateScale(scaleStore, angle);
-    // + offset, - angle
-    return scaleStore.offset * -2 * Math.PI / 12;
+    // REMEMBER: +offset is -angle
+    // Find the closest note
+    // Distance to the closest note is [-6, 6]
+    let distance = 99;
+    // Closest note should default to the current offset
+    let closest = modPos(scaleStore.offset, 12);
+    // arc length
+    const arc = 2 * Math.PI / 12;
+    // normalize the angle relative to the offset angle.
+    const normA = angle + scaleStore.offset * arc;
+    scaleStore.notes.forEach((on, i) => {
+      if (on) {
+        // normalize i by the offset so the offset appears at angle 0
+        const normI = modPos(modMinus(i, scaleStore.offset, 12), 12);
+        // compute the distance to the note
+        const dist = modMinus(normA, -normI * arc, 2 * Math.PI);
+        if (Math.abs(dist) < Math.abs(distance)) {
+          distance = dist;
+          closest = i;
+        }
+      }
+    });
+
+    if (distance === 99) {
+      return -scaleStore.offset * arc;
+    }
+
+    const offset = Math.round((-angle + distance) / 2 / Math.PI * 12);
+    scaleStore.offset = offset;
+    return -scaleStore.offset * arc;
   };
 
   view({ scaleStore }) {
