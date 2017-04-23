@@ -49,7 +49,8 @@ export default class ScalePie extends Component {
               <path
                 onClick={this.onToggles[i]}
                 d={notePathData}
-                fill={on ? ColorStore.blue : ColorStore.gray}
+                fill={ColorStore.blue}
+                opacity={on ? 1 : 0.2}
               />
             }
           />,
@@ -64,10 +65,18 @@ export default class ScalePie extends Component {
     const l = 2 + padding * 2;
     return (
       <Rotatable
-        filterTarget={target => target.tagName === "circle"}
+        filterTarget={target => target.tagName !== "path"}
         element={
           <svg style={ScalePie.svgStyle} viewBox={`${o} ${o} ${l} ${l}`}>
-            <circle cx="0" cy="0" r={l / 2} fill="red" />
+            <circle
+              cx="0"
+              cy="0"
+              r={l / 2}
+              fill="transparent"
+              stroke={ColorStore.blue}
+              strokeWidth={0.01}
+              opacity={0.2}
+            />
             {slices}
           </svg>
         }
@@ -76,7 +85,7 @@ export default class ScalePie extends Component {
   }
 
   static svgStyle = {
-    height: 200,
+    height: 250,
     transform: "rotate(-90deg)"
   };
 }

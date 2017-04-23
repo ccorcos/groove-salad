@@ -112,6 +112,7 @@ export default class Rotatable extends Component {
   view() {
     const {
       element,
+      filterTarget,
       ...props
     } = this.props;
     const style = this.getStyle();

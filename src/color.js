@@ -6,7 +6,8 @@ const ColorStore = Store({
   green: "#7BB872",
   blue: "#6395D0",
   gray: "rgb(51, 51, 51)",
-  black: "#000000"
+  black: "#000000",
+  lightgray: "rgb(111, 111, 111)"
 });
 
 export default ColorStore;
