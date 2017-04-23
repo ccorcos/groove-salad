@@ -24,6 +24,8 @@ const numberToLetter = n => {
   return `${letter}${number}`;
 };
 
+const keyboard = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
+
 export default class Playable extends Component {
   // static defaultProps = {
   //   character: "A",
@@ -50,17 +52,29 @@ export default class Playable extends Component {
     window.removeEventListener("keyup", this.handleKeyUp);
   };
 
-  handleKeyDown = e => {
+  getCharacter() {
     if (this.props.character) {
-      if (e.code === `Key${this.props.character.toUpperCase()}`) {
+      return this.props.character;
+    }
+    if (this.props.nth !== undefined) {
+      return keyboard[this.props.nth];
+    }
+    return;
+  }
+
+  handleKeyDown = e => {
+    const char = this.getCharacter();
+    if (char) {
+      if (e.code === `Key${char.toUpperCase()}`) {
         this.handleMouseDown();
       }
     }
   };
 
   handleKeyUp = e => {
-    if (this.props.character) {
-      if (e.code === `Key${this.props.character.toUpperCase()}`) {
+    const char = this.getCharacter();
+    if (char) {
+      if (e.code === `Key${char.toUpperCase()}`) {
         this.handleMouseUp();
       }
     }

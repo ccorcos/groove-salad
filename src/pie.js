@@ -1,8 +1,7 @@
 import React from "react";
 import { Component, Store } from "reactive-magic";
 import Playable from "./playable";
-
-const keyboard = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
+import ColorStore from "./color";
 
 export default class ScalePie extends Component {
   constructor(props) {
@@ -42,13 +41,13 @@ export default class ScalePie extends Component {
         return [
           <Playable
             key={i}
-            character={keyboard[i]}
+            nth={i}
             note={i + 50}
             element={
               <path
                 onClick={this.onToggles[i]}
                 d={notePathData}
-                fill={"CornflowerBlue"}
+                fill={ColorStore.primary}
                 opacity={on ? 1 : 0.1}
               />
             }
