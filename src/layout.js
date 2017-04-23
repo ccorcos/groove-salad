@@ -34,7 +34,7 @@ export default class Layout extends Component {
         <div style={{ padding: 8 }}>
           {props.circle}
         </div>
-        <div style={{ flex: 1, overflow: "scroll" }}>
+        <div style={{ flex: 1, overflow: "scroll", marginRight: 8 }}>
           {props.keyboard}
         </div>
       </div>

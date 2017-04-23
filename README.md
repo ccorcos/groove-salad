@@ -12,7 +12,6 @@ open http://localhost:8080/
 
 ## To Do
 
-- keyboard start from offset
 - slidable keyboard just slide the visual
 - rotatable change offset in realtime
 

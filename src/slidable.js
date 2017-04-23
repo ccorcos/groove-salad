@@ -2,13 +2,14 @@ import React from "react";
 import { Component, Store } from "reactive-magic";
 
 export default class Slidable extends Component {
-  slide = Store({
+  slideStore = Store({
     down: false,
-    offset: { x: null, y: null },
+    offset: 0,
     prev: { x: null, y: null },
     current: { x: null, y: null }
   });
 
+  // propagate an event to parent event handlers
   propagateEvent(name, ...args) {
     const propagate = this.props[name];
     if (propagate) {
@@ -23,62 +24,62 @@ export default class Slidable extends Component {
         return;
       }
     }
-    const slide = this.slide;
-    slide.down = true;
-    slide.prev.x = e.pageX;
-    slide.prev.y = e.pageY;
-    slide.current.x = e.pageX;
-    slide.current.y = e.pageY;
+    const slideStore = this.slideStore;
+    slideStore.down = true;
+    slideStore.prev.x = e.pageX;
+    slideStore.prev.y = e.pageY;
+    slideStore.current.x = e.pageX;
+    slideStore.current.y = e.pageY;
   };
 
   handleMouseMove = e => {
     this.propagateEvent("onMouseMove");
-    const slide = this.slide;
-    if (slide.down) {
-      slide.prev.x = slide.current.x;
-      slide.prev.y = slide.current.y;
-      slide.current.x = e.pageX;
-      slide.current.y = e.pageY;
-      slide.offset.x += current.x - prev.x;
-      slide.offset.y += current.y - prev.y;
+    const slideStore = this.slideStore;
+    if (slideStore.down) {
+      slideStore.prev.x = slideStore.current.x;
+      slideStore.prev.y = slideStore.current.y;
+      slideStore.current.x = e.pageX;
+      slideStore.current.y = e.pageY;
+      // get the rect and offset by an angle
+      const rect = e.currentTarget.getBoundingClientRect();
+      const p1 = polarize(slideStore.prev, rect);
+      const p2 = polarize(slideStore.current, rect);
+      const da = modMinus(p2.a, p1.a, 2 * Math.PI);
+      slideStore.offset += da;
     }
   };
 
   handleMouseUp = e => {
     this.propagateEvent("onMouseUp");
-    const slide = this.slide;
-    if (slide.down) {
-      slide.down = false;
-      slide.prev.x = null;
-      slide.prev.y = null;
-      slide.current.x = null;
-      slide.current.y = null;
+    const slideStore = this.slideStore;
+    if (slideStore.down) {
+      slideStore.down = false;
+      slideStore.prev.x = null;
+      slideStore.prev.y = null;
+      slideStore.current.x = null;
+      slideStore.current.y = null;
+      // snap the angle if you want
+      const snap = this.props.onSnap(slideStore.offset);
+      if (snap !== undefined) {
+        slideStore.offset = snap;
+      }
     }
   };
 
-  getStyle() {
-    const slide = this.slide;
-    const transform = [
-      this.props.x && `translateX(${slide.offset.x}px)`,
-      this.props.y && `translateY(${slide.offset.y}px)`
-    ]
-      .filter(Boolean)
-      .join(" ");
-    return { transform };
-  }
-
-  view() {
-    const {
-      element,
+  view(
+    {
+      render,
+      onSnap,
       filterTarget,
       ...props
-    } = this.props;
-    const style = this.getStyle();
+    }
+  ) {
     return this.props.render({
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
       onMouseMove: this.handleMouseMove,
-      style
+      rotation: this.slideStore.offset,
+      rotating: this.slideStore.down
     });
   }
 }
