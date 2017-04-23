@@ -85,39 +85,23 @@ export default class Rotatable extends Component {
   };
 
   getStyle() {
-    const style = this.props.element.props.style;
     const rotateStore = this.rotateStore;
     const transform = `rotate(${rotateStore.offset}rad)`;
     const transformOrigin = "50% 50%";
-    if (style) {
-      if (style.transform) {
-        return Object.assign({}, style, {
-          transformOrigin,
-          transform: `${transform} ${style.transform}`
-        });
-      } else {
-        return Object.assign({}, style, {
-          transformOrigin,
-          transform
-        });
-      }
-    } else {
-      return {
-        transformOrigin,
-        transform
-      };
-    }
+    return {
+      transformOrigin,
+      transform
+    };
   }
 
   view() {
     const {
-      element,
+      render,
       filterTarget,
       ...props
     } = this.props;
     const style = this.getStyle();
-    return React.cloneElement(this.props.element, {
-      ...props,
+    return this.props.render({
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
       onMouseMove: this.handleMouseMove,

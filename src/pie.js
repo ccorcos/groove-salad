@@ -66,8 +66,14 @@ export default class ScalePie extends Component {
     return (
       <Rotatable
         filterTarget={target => target.tagName !== "path"}
-        element={
-          <svg style={ScalePie.svgStyle} viewBox={`${o} ${o} ${l} ${l}`}>
+        render={({ onMouseDown, onMouseUp, onMouseMove, style }) => (
+          <svg
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseMove={onMouseMove}
+            style={{ ...ScalePie.svgStyle, ...style }}
+            viewBox={`${o} ${o} ${l} ${l}`}
+          >
             <circle
               cx="0"
               cy="0"
@@ -79,13 +85,12 @@ export default class ScalePie extends Component {
             />
             {slices}
           </svg>
-        }
+        )}
       />
     );
   }
 
   static svgStyle = {
-    height: 250,
-    transform: "rotate(-90deg)"
+    height: 250
   };
 }
