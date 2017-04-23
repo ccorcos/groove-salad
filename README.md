@@ -12,7 +12,8 @@ open http://localhost:8080/
 
 ## To Do
 
-- rotatable prevents click
+- slidable
+- keypressed highlights
 - onMouseOut events
 - polysynth
 - slidable
