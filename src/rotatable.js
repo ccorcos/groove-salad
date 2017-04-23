@@ -29,6 +29,7 @@ export default class Rotatable extends Component {
   //      rotation,
   //      rotating
   //    }) =>  Element
+  //    onChange
   //    onSnap: (rotation) => rotation,
   //    filterTarget: (Node) => bool
   // }
@@ -76,6 +77,7 @@ export default class Rotatable extends Component {
       const p2 = polarize(rotateStore.current, rect);
       const da = modMinus(p2.a, p1.a, 2 * Math.PI);
       rotateStore.offset += da;
+      this.props.onChange(rotateStore.offset);
     }
   };
 

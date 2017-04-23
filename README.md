@@ -12,17 +12,20 @@ open http://localhost:8080/
 
 ## To Do
 
-- slidable keyboard just slide the visual
-- rotatable change offset in realtime
+- slidable keyboard with snap
+- changing the offset should leave the red notes in the same place on the keyboard
+- make all the buttons outside the circle green
+- rotatable change offset in realtime without waiting for snap
 
 - polyphonic synth
 - visualize which notes are pressed
+
 - onMouseOut events
 - use synth with frequencies and change the the number of notes (12)
 
-- synth with multiple notes
-- display where you're holding down a note or not
-- rotatable keyboard
+- touch events
+- change 12!
+
 
 
 ---

@@ -149,6 +149,7 @@ export default class Pie extends Component {
       <Rotatable
         filterTarget={target => target.tagName !== "path"}
         onSnap={this.onSnap}
+        onChange={this.onSnap}
         render={(
           { onMouseDown, onMouseUp, onMouseMove, rotation, rotating }
         ) => (

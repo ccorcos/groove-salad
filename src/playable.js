@@ -3,7 +3,7 @@ import Tone from "tone";
 import { Component, Store } from "reactive-magic";
 
 const freeverb = new Tone.Freeverb({
-  roomSize: 0.90,
+  roomSize: 0.10,
   dampening: 30000
 }).toMaster();
 
