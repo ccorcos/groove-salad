@@ -12,13 +12,13 @@ export default class Keyboard extends Component {
     };
   }
 
-  getKeyButtonStyle() {
+  getKeyButtonStyle(i) {
     return {
       height: 80,
       width: 48,
       margin: 8,
       borderRadius: 4,
-      backgroundColor: ColorStore.blue,
+      backgroundColor: i === 0 ? ColorStore.red : ColorStore.blue,
       opacity: 0.2
     };
   }
@@ -38,8 +38,8 @@ export default class Keyboard extends Component {
         <Playable
           key={i}
           nth={n}
-          note={i + 50}
-          render={() => <div style={this.getKeyButtonStyle()} />}
+          note={i + scaleStore.base}
+          render={() => <div style={this.getKeyButtonStyle(i)} />}
         />
       ));
 
