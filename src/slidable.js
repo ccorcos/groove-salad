@@ -57,7 +57,6 @@ export default class Slidable extends Component {
   };
 
   getStyle() {
-    const style = this.props.element.props.style;
     const slide = this.slide;
     const transform = [
       this.props.x && `translateX(${slide.offset.x}px)`,
@@ -65,21 +64,7 @@ export default class Slidable extends Component {
     ]
       .filter(Boolean)
       .join(" ");
-    if (style) {
-      if (style.transform) {
-        return Object.assign({}, style, {
-          transform: `${transform} ${style.transform}`
-        });
-      } else {
-        return Object.assign({}, style, {
-          transform
-        });
-      }
-    } else {
-      return {
-        transform
-      };
-    }
+    return { transform };
   }
 
   view() {
@@ -89,8 +74,7 @@ export default class Slidable extends Component {
       ...props
     } = this.props;
     const style = this.getStyle();
-    return React.cloneElement(this.props.element, {
-      ...props,
+    return this.props.render({
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
       onMouseMove: this.handleMouseMove,
