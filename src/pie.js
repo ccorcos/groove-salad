@@ -1,5 +1,8 @@
 import React from "react";
 import { Component, Store } from "reactive-magic";
+import Playable from "./playable";
+
+const keyboard = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
 
 export default class ScalePie extends Component {
   constructor(props) {
@@ -36,23 +39,19 @@ export default class ScalePie extends Component {
           `A 1 1 0 0 1 ${spaceX} ${spaceY}`, // Arc
           `L 0 0` // Line
         ].join(" ");
-
         return [
-          <path
-            onClick={this.onToggles[i]}
+          <Playable
             key={i}
-            d={notePathData}
-            style={{
-              fill: on ? "CornflowerBlue" : "white"
-            }}
+            note={i + 50}
+            element={
+              <path
+                onClick={this.onToggles[i]}
+                d={notePathData}
+                fill={on ? "CornflowerBlue" : "white"}
+              />
+            }
           />,
-          <path
-            key={-i - 1}
-            d={spacePathData}
-            style={{
-              full: "green"
-            }}
-          />
+          <path key={-i - 1} d={spacePathData} fill="black" />
         ];
       })
       .reduce((acc, list) => acc.concat(list), []);
