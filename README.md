@@ -12,12 +12,13 @@ open http://localhost:8080/
 
 ## To Do
 
-- slidable
-- keypressed highlights
-- onMouseOut events
-- polysynth
-- slidable
+- keyboard start from offset
+- slidable keyboard just slide the visual
+- rotatable change offset in realtime
 
+- polyphonic synth
+- visualize which notes are pressed
+- onMouseOut events
 - use synth with frequencies and change the the number of notes (12)
 
 - synth with multiple notes

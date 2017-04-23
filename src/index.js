@@ -32,7 +32,7 @@ export default class App extends Component {
     return (
       <Layout
         circle={<ScalePie scaleStore={ScaleStore} />}
-        // keyboard={<Keyboard scaleStore={ScaleStore} />}
+        keyboard={<Keyboard scaleStore={ScaleStore} />}
       />
     );
   }
