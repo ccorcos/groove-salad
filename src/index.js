@@ -20,16 +20,19 @@ const noScrollbar = css({
 });
 
 const ScaleStore = Store({
+  offset: 0,
   base: 60,
   notes: Array(12).fill(false)
 });
+
+window.scaleStore = ScaleStore;
 
 export default class App extends Component {
   view() {
     return (
       <Layout
         circle={<ScalePie scaleStore={ScaleStore} />}
-        keyboard={<Keyboard scaleStore={ScaleStore} />}
+        // keyboard={<Keyboard scaleStore={ScaleStore} />}
       />
     );
   }

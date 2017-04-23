@@ -117,9 +117,7 @@ export default class Playable extends Component {
       ...props
     }
   ) {
-    const element = this.props.render();
-    return React.cloneElement(element, {
-      ...props,
+    return this.props.render({
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp
     });

@@ -1,8 +1,8 @@
 import React from "react";
 import { Component, Store } from "reactive-magic";
-import SizeStore from "./size";
+import SizeStore from "./stores/size";
 import Playable from "./playable";
-import ColorStore from "./color";
+import ColorStore from "./stores/color";
 
 export default class Keyboard extends Component {
   getKeyboardStyle() {
@@ -18,7 +18,9 @@ export default class Keyboard extends Component {
       width: 48,
       margin: 8,
       borderRadius: 4,
-      backgroundColor: i === 0 ? ColorStore.red : ColorStore.blue,
+      backgroundColor: i === this.props.scaleStore.offset % 12
+        ? ColorStore.red
+        : ColorStore.blue,
       opacity: 0.2
     };
   }

@@ -18,6 +18,8 @@ open http://localhost:8080/
 - polysynth
 - slidable
 
+- use synth with frequencies and change the the number of notes (12)
+
 - synth with multiple notes
 - display where you're holding down a note or not
 - rotatable keyboard

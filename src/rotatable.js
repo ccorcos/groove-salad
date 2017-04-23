@@ -8,13 +8,7 @@ import { Component, Store } from "reactive-magic";
 //   step: 1
 // });
 
-// function difference(p1, p2) {
-//   return {
-//     x: p1.x - p2.x,
-//     y: p1.y - p2.y
-//   };
-// }
-
+// Given a {x, y} point and a {top, left, height, width} rect, find the polar coordinates of the point within the rect
 function polarize(point, rect) {
   const p = {
     x: point.x - rect.left - rect.width / 2,
@@ -26,6 +20,17 @@ function polarize(point, rect) {
 }
 
 export default class Rotatable extends Component {
+  // props = {
+  //    render: ({
+  //      onMouseDown,
+  //      onMouseUp,
+  //      onMouseMove,
+  //      rotation,
+  //      rotating
+  //    }) =>  Element
+  //    onSnap: (rotation) => rotation,
+  //    filterTarget: (Node) => bool
+  // }
   rotateStore = Store({
     down: false,
     offset: 0,
@@ -33,6 +38,7 @@ export default class Rotatable extends Component {
     current: { x: null, y: null }
   });
 
+  // propagate an event to parent event handlers
   propagateEvent(name, ...args) {
     const propagate = this.props[name];
     if (propagate) {
@@ -63,7 +69,7 @@ export default class Rotatable extends Component {
       rotateStore.prev.y = rotateStore.current.y;
       rotateStore.current.x = e.pageX;
       rotateStore.current.y = e.pageY;
-
+      // get the rect and offset by an angle
       const rect = e.currentTarget.getBoundingClientRect();
       const p1 = polarize(rotateStore.prev, rect);
       const p2 = polarize(rotateStore.current, rect);
@@ -81,31 +87,28 @@ export default class Rotatable extends Component {
       rotateStore.prev.y = null;
       rotateStore.current.x = null;
       rotateStore.current.y = null;
+      // snap the angle if you want
+      const snap = this.props.onSnap(rotateStore.offset);
+      if (snap !== undefined) {
+        rotateStore.offset = snap;
+      }
     }
   };
 
-  getStyle() {
-    const rotateStore = this.rotateStore;
-    const transform = `rotate(${rotateStore.offset}rad)`;
-    const transformOrigin = "50% 50%";
-    return {
-      transformOrigin,
-      transform
-    };
-  }
-
-  view() {
-    const {
+  view(
+    {
       render,
+      onSnap,
       filterTarget,
       ...props
-    } = this.props;
-    const style = this.getStyle();
+    }
+  ) {
     return this.props.render({
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
       onMouseMove: this.handleMouseMove,
-      style
+      rotation: this.rotateStore.offset,
+      rotating: this.rotateStore.down
     });
   }
 }

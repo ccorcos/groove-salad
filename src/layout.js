@@ -1,6 +1,6 @@
 import React from "react";
 import { Component, Store } from "reactive-magic";
-import SizeStore from "./size";
+import SizeStore from "./stores/size";
 
 export default class Layout extends Component {
   getOrientation() {
