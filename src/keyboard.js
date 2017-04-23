@@ -38,7 +38,7 @@ export default class Keyboard extends Component {
           key={i}
           nth={n}
           note={i + 50}
-          element={<div style={this.getKeyButtonStyle()} />}
+          render={() => <div style={this.getKeyButtonStyle()} />}
         />
       ));
 

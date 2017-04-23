@@ -45,14 +45,14 @@ export default class ScalePie extends Component {
           <Playable
             key={i}
             note={i + scaleStore.base}
-            element={
+            render={() => (
               <path
                 onClick={this.onToggles[i]}
                 d={notePathData}
                 fill={ColorStore.blue}
                 opacity={on ? 1 : 0.2}
               />
-            }
+            )}
           />,
           <path key={-i - 1} d={spacePathData} fill="transparent" />
         ];

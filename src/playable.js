@@ -112,12 +112,13 @@ export default class Playable extends Component {
     {
       character,
       nth,
-      element,
+      render,
       note,
       ...props
     }
   ) {
-    return React.cloneElement(this.props.element, {
+    const element = this.props.render();
+    return React.cloneElement(element, {
       ...props,
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp
