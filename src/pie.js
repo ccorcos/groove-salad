@@ -7,6 +7,13 @@ import ColorStore from "./color";
 // padding of the outer ring for spinning
 const padding = 0.4;
 
+function mergeStyles(a, b) {
+  if (a.transform && b.transform) {
+    return { ...a, ...b, transform: [a.transform, b.transform].join(" ") };
+  }
+  return { ...a, ...b };
+}
+
 export default class ScalePie extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +56,7 @@ export default class ScalePie extends Component {
               <path
                 onClick={this.onToggles[i]}
                 d={notePathData}
-                fill={ColorStore.blue}
+                fill={i === 0 ? ColorStore.red : ColorStore.blue}
                 opacity={on ? 1 : 0.2}
               />
             )}
@@ -71,7 +78,7 @@ export default class ScalePie extends Component {
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             onMouseMove={onMouseMove}
-            style={{ ...ScalePie.svgStyle, ...style }}
+            style={mergeStyles(ScalePie.svgStyle, style)}
             viewBox={`${o} ${o} ${l} ${l}`}
           >
             <circle
@@ -91,6 +98,7 @@ export default class ScalePie extends Component {
   }
 
   static svgStyle = {
-    height: 250
+    height: 250,
+    transform: "rotate(-90deg)"
   };
 }
