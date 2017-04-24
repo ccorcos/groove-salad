@@ -134,6 +134,7 @@ export default class Pie extends Component {
     return notes.map((on, i) => {
       return (
         <Playable
+          scaleStore={this.props.scaleStore}
           key={i}
           note={i + scaleStore.base + scaleStore.offset}
           render={({ onMouseUp, onMouseDown, onMouseLeave }) => (

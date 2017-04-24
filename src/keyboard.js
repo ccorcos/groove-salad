@@ -138,6 +138,7 @@ export default class Keyboard extends Component {
 
       return (
         <Playable
+          scaleStore={this.props.scaleStore}
           key={offsetNote}
           nth={index - slide}
           note={offsetNote}

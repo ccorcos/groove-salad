@@ -117,14 +117,20 @@ export default class Playable extends Component {
     }
   }
 
+  getFrequency() {
+    const base = this.props.scaleStore.base;
+    const baseFreq = this.props.scaleStore.baseFreq;
+    return baseFreq * Math.pow(2, (this.props.note - base) / 12);
+  }
+
   triggerAttack() {
     this.playableStore.down = true;
-    synth.triggerAttack(numberToLetter(this.props.note));
+    synth.triggerAttack(this.getFrequency());
   }
 
   triggerRelease() {
     this.playableStore.down = false;
-    synth.triggerRelease(numberToLetter(this.props.note));
+    synth.triggerRelease(this.getFrequency());
   }
 
   handleMouseDown = e => {

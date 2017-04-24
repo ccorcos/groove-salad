@@ -21,7 +21,9 @@ const noScrollbar = css({
 
 const ScaleStore = Store({
   offset: 0,
-  base: 60,
+  // base MUST be a fraction of 12
+  base: 48,
+  baseFreq: 440,
   notes: Array(12).fill(false)
 });
 
