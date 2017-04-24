@@ -5,6 +5,7 @@ import Playable from "./playable";
 import ColorStore, { hexToRgba } from "./stores/color";
 import { modPos } from "./utils/mod-math";
 import Slidable from "./slidable";
+import SynthStore from "./stores/synth";
 
 function repeat(list, n) {
   let acc = [];
@@ -72,7 +73,7 @@ export default class Keyboard extends Component {
     };
   }
 
-  getKeyButtonStyle({ isRoot, sliding }) {
+  getKeyButtonStyle({ isRoot, sliding, pressed }) {
     return {
       flexShrink: 0,
       height: 80,
@@ -80,7 +81,7 @@ export default class Keyboard extends Component {
       margin: buttonMargin,
       borderRadius: 4,
       backgroundColor: isRoot ? ColorStore.red : ColorStore.blue,
-      opacity: 0.2,
+      opacity: pressed ? 1 : 0.2,
       cursor: !sliding && "pointer"
     };
   }
@@ -127,6 +128,7 @@ export default class Keyboard extends Component {
       rootOffsetIndex
     } = this.deriveOffsetStuff();
 
+    const pressedNotes = SynthStore.pressed;
     return repeat(playableNotes, 8).map((note, index) => {
       const isRoot = modPos(note, 12) === modPos(scaleOffset, 12);
 
@@ -135,7 +137,7 @@ export default class Keyboard extends Component {
       const slide = rootOctave * notesPerOctave +
         nthNoteInScale -
         this.keyboardStore.offset;
-
+      const pressed = pressedNotes[offsetNote];
       return (
         <Playable
           scaleStore={this.props.scaleStore}
@@ -148,7 +150,7 @@ export default class Keyboard extends Component {
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
               onMouseLeave={onMouseLeave}
-              style={this.getKeyButtonStyle({ isRoot, sliding })}
+              style={this.getKeyButtonStyle({ isRoot, sliding, pressed })}
             />
           )}
         />

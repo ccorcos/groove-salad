@@ -4,6 +4,7 @@ import Playable from "./playable";
 import Rotatable from "./rotatable";
 import ColorStore from "./stores/color";
 import { modPos, modMinus, modPlus } from "./utils/mod-math";
+import SynthStore from "./stores/synth";
 
 // padding of the outer ring for spinning
 const padding = 0.4;
@@ -19,7 +20,16 @@ class Slice extends Component {
   // source: https://hackernoon.com/a-simple-pie-chart-in-svg-dbdd653b6936
 
   view(
-    { on, offset, onClick, onMouseUp, onMouseDown, onMouseLeave, rotating }
+    {
+      on,
+      pressed,
+      offset,
+      onClick,
+      onMouseUp,
+      onMouseDown,
+      onMouseLeave,
+      rotating
+    }
   ) {
     const i = offset;
 
@@ -59,7 +69,7 @@ class Slice extends Component {
               ? ColorStore.red
               : ColorStore.blue
           }
-          opacity={on ? 1 : 0.2}
+          opacity={pressed ? 1 : on ? 0.6 : 0.2}
           style={{ cursor: rotating ? "all-scroll" : "pointer" }}
         />
         <path key={-i - 1} d={spacePathData} fill="transparent" />
@@ -135,7 +145,13 @@ export default class Pie extends Component {
       // the circle spins so we need to offset the note index as well.
       const noteIndex = modPos(i - scaleStore.offset, 12);
       const note = noteIndex + scaleStore.base + scaleStore.offset;
-      console.log(i, note);
+
+      let pressed = false;
+      Object.keys(SynthStore.pressed).forEach(pressedNote => {
+        if (modPos(pressedNote, 12) === modPos(note, 12)) {
+          pressed = true;
+        }
+      });
       return (
         <Playable
           scaleStore={this.props.scaleStore}
@@ -148,6 +164,7 @@ export default class Pie extends Component {
               onMouseLeave={onMouseLeave}
               scaleStore={scaleStore}
               on={on}
+              pressed={pressed}
               offset={i}
               rotating={rotating}
               onClick={this.onToggles[i]}

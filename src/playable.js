@@ -1,15 +1,16 @@
 import React from "react";
 import Tone from "tone";
 import { Component, Store } from "reactive-magic";
+import SynthStore from "./stores/synth";
 
 const freeverb = new Tone.Freeverb({
-  roomSize: 0.10,
+  roomSize: 0.50,
   dampening: 30000
 }).toMaster();
 
 var filter = new Tone.Filter({
   type: "lowpass",
-  frequency: 500,
+  frequency: 250,
   rolloff: -12, // -12, -24, -48 or -96
   Q: 1,
   gain: 0
@@ -125,11 +126,15 @@ export default class Playable extends Component {
 
   triggerAttack() {
     this.playableStore.down = true;
+    SynthStore.pressed[this.props.note] = true;
+    SynthStore.pressed = SynthStore.pressed;
     synth.triggerAttack(this.getFrequency());
   }
 
   triggerRelease() {
     this.playableStore.down = false;
+    delete SynthStore.pressed[this.props.note];
+    SynthStore.pressed = SynthStore.pressed;
     synth.triggerRelease(this.getFrequency());
   }
 
