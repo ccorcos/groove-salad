@@ -132,11 +132,15 @@ export default class Pie extends Component {
     const arc = 1 / 12;
     const noteArc = arc - spaceArc;
     return notes.map((on, i) => {
+      // the circle spins so we need to offset the note index as well.
+      const noteIndex = modPos(i - scaleStore.offset, 12);
+      const note = noteIndex + scaleStore.base + scaleStore.offset;
+      console.log(i, note);
       return (
         <Playable
           scaleStore={this.props.scaleStore}
           key={i}
-          note={i + scaleStore.base + scaleStore.offset}
+          note={note}
           render={({ onMouseUp, onMouseDown, onMouseLeave }) => (
             <Slice
               onMouseUp={onMouseUp}
