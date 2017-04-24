@@ -9,8 +9,8 @@ const freeverb = new Tone.Freeverb({
 
 var filter = new Tone.Filter({
   type: "lowpass",
-  frequency: 250,
-  rolloff: -24, // -12, -24, -48 or -96
+  frequency: 500,
+  rolloff: -12, // -12, -24, -48 or -96
   Q: 1,
   gain: 0
 }).connect(freeverb);
