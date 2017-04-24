@@ -41,14 +41,16 @@ export default class Keyboard extends Component {
   deriveOffsetStuff() {
     const scaleBase = this.props.scaleStore.base;
     const scaleOffset = this.props.scaleStore.offset;
+    const semitones = this.props.scaleStore.semitones;
     const rootNote = scaleBase + scaleOffset;
-    const rootOctave = Math.floor(rootNote / 12);
+    const rootOctave = Math.floor(rootNote / semitones);
     const playableNotes = this.getPlayableNotes();
     const notesPerOctave = playableNotes.length;
-    const nthNoteInScale = playableNotes.indexOf(modPos(rootNote, 12));
+    const nthNoteInScale = playableNotes.indexOf(modPos(rootNote, semitones));
     const rootOffsetIndex = rootOctave * notesPerOctave + nthNoteInScale;
     const totalNotes = notesPerOctave * 8;
     return {
+      semitones,
       scaleBase,
       scaleOffset,
       rootNote,
@@ -125,15 +127,16 @@ export default class Keyboard extends Component {
       notesPerOctave,
       rootOctave,
       nthNoteInScale,
-      rootOffsetIndex
+      rootOffsetIndex,
+      semitones
     } = this.deriveOffsetStuff();
 
     const pressedNotes = SynthStore.pressed;
     return repeat(playableNotes, 8).map((note, index) => {
-      const isRoot = modPos(note, 12) === modPos(scaleOffset, 12);
+      const isRoot = modPos(note, semitones) === modPos(scaleOffset, semitones);
 
       const octave = Math.floor(index / notesPerOctave);
-      const offsetNote = note + octave * 12;
+      const offsetNote = note + octave * semitones;
       const slide = rootOctave * notesPerOctave +
         nthNoteInScale -
         this.keyboardStore.offset;

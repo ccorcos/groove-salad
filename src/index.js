@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import R from "ramda";
 import { css } from "glamor";
-import { Component, Store } from "reactive-magic";
+import { Component, Store, Value, Derive } from "reactive-magic";
 import ScalePie from "./pie";
 import Layout from "./layout";
 import Keyboard from "./keyboard";
@@ -19,12 +19,13 @@ const noScrollbar = css({
   }
 });
 
+const semitones = Value(12);
 const ScaleStore = Store({
   offset: 0,
-  // base MUST be a fraction of 12
-  base: 48,
-  baseFreq: 440,
-  notes: Array(12).fill(false)
+  semitones,
+  base: Derive(() => semitones() * 4),
+  notes: Array(semitones()).fill(false),
+  baseFreq: 440
 });
 
 window.scaleStore = ScaleStore;

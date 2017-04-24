@@ -28,13 +28,15 @@ class Slice extends Component {
       onMouseUp,
       onMouseDown,
       onMouseLeave,
-      rotating
+      rotating,
+      scaleStore
     }
   ) {
     const i = offset;
 
+    const semitones = scaleStore.semitones;
     // we have spacer arc
-    const arc = 1 / 12;
+    const arc = 1 / semitones;
     const spaceArc = 1 / 500;
     const noteArc = arc - spaceArc;
 
@@ -65,7 +67,7 @@ class Slice extends Component {
         <path
           d={notePathData}
           fill={
-            i === modPos(scaleStore.offset, 12)
+            i === modPos(scaleStore.offset, semitones)
               ? ColorStore.red
               : ColorStore.blue
           }
@@ -90,10 +92,11 @@ export default class Pie extends Component {
   }
 
   getStyle({ rotation, rotating }) {
+    const semitones = this.props.scaleStore.semitones;
     return {
       height: 250,
       // align 0 at the top, and then rotate
-      transform: `rotate(${-90 - 360 / 12 / 2}deg) rotate(${rotation}rad)`,
+      transform: `rotate(${-90 - 360 / semitones / 2}deg) rotate(${rotation}rad)`,
       transformOrigin: "50% 50%",
       // animate snaps
       transition: !rotating ? "transform ease-in-out 0.5s" : undefined
@@ -105,18 +108,22 @@ export default class Pie extends Component {
   // REMEMBER: +offset is -angle
   onSnap = angle => {
     const { scaleStore } = this.props;
+    const semitones = scaleStore.semitones;
     // We know the arclength of each piece of pie
-    const arc = 2 * Math.PI / 12;
+    const arc = 2 * Math.PI / semitones;
     // A +offset is a -angle, so we can find the normalized angle
     const normA = angle + scaleStore.offset * arc;
     // To find the closest not, we need to do some modular math. The distance of normA to the note of interest will be computed to the range of [-pi, +pi] so we can compare distances and add this distance to the angle to get the place to snap to
     let distance = 99;
     // Closest note should start at the previous offset index. modPos will take the offset and return something in the range of [0, 11]
-    let closest = modPos(scaleStore.offset, 12);
+    let closest = modPos(scaleStore.offset, semitones);
     scaleStore.notes.forEach((on, i) => {
       if (on) {
         // Normalize i by the offset, so an offset of 3 at and index of 3 is a normI of 0 and an offset of 3 at an index of 1 is 10.
-        const normI = modPos(modMinus(i, scaleStore.offset, 12), 12);
+        const normI = modPos(
+          modMinus(i, scaleStore.offset, semitones),
+          semitones
+        );
         // Compute the distance to a note
         const dist = modMinus(normA, -normI * arc, 2 * Math.PI);
         if (Math.abs(dist) < Math.abs(distance)) {
@@ -138,17 +145,18 @@ export default class Pie extends Component {
 
   viewSlices({ scaleStore, rotating }) {
     const notes = scaleStore.notes;
+    const semitones = scaleStore.semitones;
     const spaceArc = 1 / 500;
-    const arc = 1 / 12;
+    const arc = 1 / semitones;
     const noteArc = arc - spaceArc;
     return notes.map((on, i) => {
       // the circle spins so we need to offset the note index as well.
-      const noteIndex = modPos(i - scaleStore.offset, 12);
+      const noteIndex = modPos(i - scaleStore.offset, semitones);
       const note = noteIndex + scaleStore.base + scaleStore.offset;
 
       let pressed = false;
       Object.keys(SynthStore.pressed).forEach(pressedNote => {
-        if (modPos(pressedNote, 12) === modPos(note, 12)) {
+        if (modPos(pressedNote, semitones) === modPos(note, semitones)) {
           pressed = true;
         }
       });

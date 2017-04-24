@@ -121,7 +121,8 @@ export default class Playable extends Component {
   getFrequency() {
     const base = this.props.scaleStore.base;
     const baseFreq = this.props.scaleStore.baseFreq;
-    return baseFreq * Math.pow(2, (this.props.note - base) / 12);
+    const semitones = this.props.scaleStore.semitones;
+    return baseFreq * Math.pow(2, (this.props.note - base) / semitones);
   }
 
   triggerAttack() {

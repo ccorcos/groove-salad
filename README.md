@@ -12,12 +12,8 @@ open http://localhost:8080/
 
 ## To Do
 
-- make this work with different scale base number
-- make sound with frequency rather
-- visualize which notes are pressed
 - change number of notes to 12
 - touch events
-
 
 
 ---
