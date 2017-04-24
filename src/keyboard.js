@@ -2,8 +2,9 @@ import React from "react";
 import { Component, Store } from "reactive-magic";
 import SizeStore from "./stores/size";
 import Playable from "./playable";
-import ColorStore from "./stores/color";
+import ColorStore, { hexToRgba } from "./stores/color";
 import { modPos } from "./utils/mod-math";
+import Slidable from "./slidable";
 
 function repeat(list, n) {
   let acc = [];
@@ -14,12 +15,26 @@ function repeat(list, n) {
 }
 
 export default class Keyboard extends Component {
-  getKeyboardStyle() {
+  getKeyboardContainerStyle() {
     return {
-      height: 250,
-      flex: 1,
       display: "flex",
-      alignItems: "center"
+      flex: 1,
+      marginRight: 8,
+      overflow: "hidden"
+    };
+  }
+
+  getKeyboardStyle({ sliding, offset }) {
+    return {
+      height: 200,
+      flex: 1,
+      borderTop: `1px solid black`,
+      borderBottom: `1px solid black`,
+      borderColor: hexToRgba(ColorStore.blue, 0.2),
+      display: "flex",
+      alignItems: "center",
+      transform: `translateX(${offset.x}px)`,
+      transition: !sliding ? "transform ease-in-out 0.5s" : undefined
     };
   }
 
@@ -34,6 +49,10 @@ export default class Keyboard extends Component {
       opacity: 0.2
     };
   }
+
+  onSnap = angle => {
+    console.log("aw snap!");
+  };
 
   view({ scaleStore }) {
     // need to register these as deps because we might not use them on the first render
@@ -79,6 +98,7 @@ export default class Keyboard extends Component {
             }
           ) => (
             <div
+              className="button"
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
               style={this.getKeyButtonStyle(isRoot)}
@@ -88,6 +108,31 @@ export default class Keyboard extends Component {
       );
     });
 
-    return <div style={this.getKeyboardStyle()}>{playableButtons}</div>;
+    return (
+      <Slidable
+        onSnap={this.onSnap}
+        filterTarget={target => target.className !== "button"}
+        render={(
+          {
+            onMouseDown,
+            onMouseUp,
+            onMouseMove,
+            offset,
+            sliding
+          }
+        ) => (
+          <div
+            style={this.getKeyboardContainerStyle()}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseMove={onMouseMove}
+          >
+            <div style={this.getKeyboardStyle({ sliding, offset })}>
+              {playableButtons}
+            </div>
+          </div>
+        )}
+      />
+    );
   }
 }

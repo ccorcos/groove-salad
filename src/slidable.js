@@ -4,7 +4,7 @@ import { Component, Store } from "reactive-magic";
 export default class Slidable extends Component {
   slideStore = Store({
     down: false,
-    offset: 0,
+    offset: { x: null, y: null },
     prev: { x: null, y: null },
     current: { x: null, y: null }
   });
@@ -26,26 +26,29 @@ export default class Slidable extends Component {
     }
     const slideStore = this.slideStore;
     slideStore.down = true;
-    slideStore.prev.x = e.pageX;
-    slideStore.prev.y = e.pageY;
-    slideStore.current.x = e.pageX;
-    slideStore.current.y = e.pageY;
+    slideStore.prev = {
+      x: e.pageX,
+      y: e.pageY
+    };
+    slideStore.current = {
+      x: e.pageX,
+      y: e.pageY
+    };
   };
 
   handleMouseMove = e => {
     this.propagateEvent("onMouseMove");
     const slideStore = this.slideStore;
     if (slideStore.down) {
-      slideStore.prev.x = slideStore.current.x;
-      slideStore.prev.y = slideStore.current.y;
-      slideStore.current.x = e.pageX;
-      slideStore.current.y = e.pageY;
-      // get the rect and offset by an angle
-      const rect = e.currentTarget.getBoundingClientRect();
-      const p1 = polarize(slideStore.prev, rect);
-      const p2 = polarize(slideStore.current, rect);
-      const da = modMinus(p2.a, p1.a, 2 * Math.PI);
-      slideStore.offset += da;
+      slideStore.prev = slideStore.current;
+      slideStore.current = {
+        x: e.pageX,
+        y: e.pageY
+      };
+      slideStore.offset = {
+        x: slideStore.offset.x + slideStore.current.x - slideStore.prev.x,
+        y: slideStore.offset.y + slideStore.current.y - slideStore.prev.y
+      };
     }
   };
 
@@ -54,10 +57,8 @@ export default class Slidable extends Component {
     const slideStore = this.slideStore;
     if (slideStore.down) {
       slideStore.down = false;
-      slideStore.prev.x = null;
-      slideStore.prev.y = null;
-      slideStore.current.x = null;
-      slideStore.current.y = null;
+      slideStore.prev = { x: null, y: null };
+      slideStore.current = { x: null, y: null };
       // snap the angle if you want
       const snap = this.props.onSnap(slideStore.offset);
       if (snap !== undefined) {
@@ -78,8 +79,8 @@ export default class Slidable extends Component {
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
       onMouseMove: this.handleMouseMove,
-      rotation: this.slideStore.offset,
-      rotating: this.slideStore.down
+      offset: this.slideStore.offset,
+      sliding: this.slideStore.down
     });
   }
 }
