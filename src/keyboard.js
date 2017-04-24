@@ -33,24 +33,37 @@ export default class Keyboard extends Component {
     };
   }
 
-  getKeyboardStyle({ sliding, offset }) {
+  deriveOffsetStuff() {
     const scaleBase = this.props.scaleStore.base;
     const scaleOffset = this.props.scaleStore.offset;
-    const rootOffset = scaleBase + scaleOffset;
+    const rootNote = scaleBase + scaleOffset;
+    const rootOctave = Math.floor(rootNote / 12);
     const playableNotes = this.getPlayableNotes();
     const notesPerOctave = playableNotes.length;
-    const nthNoteInScale = playableNotes.indexOf(modPos(rootOffset, 12));
+    const nthNoteInScale = playableNotes.indexOf(modPos(rootNote, 12));
+    const rootOffsetIndex = rootOctave * notesPerOctave + nthNoteInScale;
+    const totalNotes = notesPerOctave * 8;
+    return {
+      scaleBase,
+      scaleOffset,
+      rootNote,
+      rootOctave,
+      playableNotes,
+      notesPerOctave,
+      nthNoteInScale,
+      rootOffsetIndex,
+      totalNotes
+    };
+  }
 
-    const rootOffsetPx = (Math.floor(rootOffset / 12) * notesPerOctave +
-      nthNoteInScale) *
-      buttonSize;
-
+  getKeyboardStyle({ sliding, offset }) {
+    const { rootOffsetIndex } = this.deriveOffsetStuff();
     return {
       height: 200,
       flex: 1,
       display: "flex",
       alignItems: "center",
-      transform: `translateX(${offset.x - rootOffsetPx}px)`,
+      transform: `translateX(${offset.x - rootOffsetIndex * buttonSize}px)`,
       transition: !sliding ? "transform ease-in-out 0.5s" : undefined
     };
   }
@@ -84,15 +97,11 @@ export default class Keyboard extends Component {
     if (offset.x === null) {
       return offset;
     }
-    const scaleBase = this.props.scaleStore.base;
-    const scaleOffset = this.props.scaleStore.offset;
-    const rootNote = scaleBase + scaleOffset;
-    const rootOctave = Math.floor(rootNote / 12);
-    const playableNotes = this.getPlayableNotes();
-    const notesPerOctave = playableNotes.length;
-    const nthNoteInScale = playableNotes.indexOf(modPos(rootNote, 12));
-    const rootOffsetIndex = rootOctave * notesPerOctave + nthNoteInScale;
-    const totalNotes = notesPerOctave * 8;
+    const {
+      notesPerOctave,
+      rootOffsetIndex,
+      totalNotes
+    } = this.deriveOffsetStuff();
     if (notesPerOctave === 0) {
       return { y: offset.y, x: 0 };
     }
@@ -103,27 +112,19 @@ export default class Keyboard extends Component {
   };
 
   viewButtons({ sliding }) {
-    // need to register these as deps because we might not use them on the first render
-    const scaleOffset = this.props.scaleStore.offset;
-    const scaleBase = this.props.scaleStore.base;
+    const {
+      scaleOffset,
+      playableNotes,
+      notesPerOctave,
+      rootOctave,
+      nthNoteInScale
+    } = this.deriveOffsetStuff();
 
-    // playable notes in the scale
-    const playableNotes = this.getPlayableNotes();
-
-    const notesPerOctave = playableNotes.length;
-    const allNotes = repeat(playableNotes, 8);
-
-    return allNotes.map((note, index) => {
+    return repeat(playableNotes, 8).map((note, index) => {
       const isRoot = modPos(note, 12) === modPos(scaleOffset, 12);
 
       const octave = Math.floor(index / notesPerOctave);
       const offsetNote = note + octave * 12;
-
-      // Compute the index of the note where the current offset is.
-      const nthNoteInScale = playableNotes.indexOf(modPos(scaleOffset, 12));
-      const rootNote = scaleBase + scaleOffset;
-      const rootOctave = Math.floor(rootNote / 12);
-      const rootOffsetIndex = rootOctave * notesPerOctave + nthNoteInScale;
       const slide = rootOctave * notesPerOctave + nthNoteInScale;
 
       return (
