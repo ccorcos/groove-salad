@@ -22,9 +22,13 @@ export default class Keyboard extends Component {
   getKeyboardContainerStyle() {
     return {
       display: "flex",
-      marginRight: 8,
+      margin: 8,
       overflow: "hidden",
-      width: width
+      width: width,
+      border: `1px solid black`,
+      borderRadius: 4,
+      borderColor: hexToRgba(ColorStore.blue, 0.2),
+      cursor: "ew-resize"
     };
   }
 
@@ -32,9 +36,6 @@ export default class Keyboard extends Component {
     return {
       height: 200,
       flex: 1,
-      borderTop: `1px solid black`,
-      borderBottom: `1px solid black`,
-      borderColor: hexToRgba(ColorStore.blue, 0.2),
       display: "flex",
       alignItems: "center",
       transform: `translateX(${offset.x}px)`,
@@ -42,7 +43,7 @@ export default class Keyboard extends Component {
     };
   }
 
-  getKeyButtonStyle(isRoot) {
+  getKeyButtonStyle({ isRoot, sliding }) {
     return {
       flexShrink: 0,
       height: 80,
@@ -50,7 +51,8 @@ export default class Keyboard extends Component {
       margin: buttonMargin,
       borderRadius: 4,
       backgroundColor: isRoot ? ColorStore.red : ColorStore.blue,
-      opacity: 0.2
+      opacity: 0.2,
+      cursor: !sliding && "pointer"
     };
   }
 
@@ -67,8 +69,14 @@ export default class Keyboard extends Component {
   }
 
   onSnap = offset => {
+    if (offset.x === null) {
+      return offset;
+    }
     const playableNotes = this.getPlayableNotes();
     const notesPerOctave = playableNotes.length;
+    if (notesPerOctave === 0) {
+      return { y: offset.y, x: 0 };
+    }
     const noteWidth = buttonWidth + 2 * buttonMargin;
     const min = width - notesPerOctave * 8 * noteWidth;
     const max = 0;
@@ -77,7 +85,7 @@ export default class Keyboard extends Component {
     return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
   };
 
-  view({ scaleStore }) {
+  viewButtons({ sliding }) {
     // need to register these as deps because we might not use them on the first render
     const scaleOffset = scaleStore.offset;
     const scaleBase = scaleStore.base;
@@ -88,7 +96,7 @@ export default class Keyboard extends Component {
     const notesPerOctave = playableNotes.length;
     const allNotes = repeat(playableNotes, 8);
 
-    const playableButtons = allNotes.map((note, index) => {
+    return allNotes.map((note, index) => {
       const isRoot = modPos(note, 12) === modPos(scaleOffset, 12);
 
       const octave = Math.floor(index / notesPerOctave);
@@ -116,13 +124,15 @@ export default class Keyboard extends Component {
               className="button"
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
-              style={this.getKeyButtonStyle(isRoot)}
+              style={this.getKeyButtonStyle({ isRoot, sliding })}
             />
           )}
         />
       );
     });
+  }
 
+  view({ scaleStore }) {
     return (
       <Slidable
         onSnap={this.onSnap}
@@ -143,7 +153,7 @@ export default class Keyboard extends Component {
             onMouseMove={onMouseMove}
           >
             <div style={this.getKeyboardStyle({ sliding, offset })}>
-              {playableButtons}
+              {this.viewButtons({ sliding })}
             </div>
           </div>
         )}

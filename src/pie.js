@@ -18,7 +18,7 @@ function mergeStyles(a, b) {
 class Slice extends Component {
   // source: https://hackernoon.com/a-simple-pie-chart-in-svg-dbdd653b6936
 
-  view({ on, offset, onClick, onMouseUp, onMouseDown }) {
+  view({ on, offset, onClick, onMouseUp, onMouseDown, rotating }) {
     const i = offset;
 
     // we have spacer arc
@@ -53,6 +53,7 @@ class Slice extends Component {
               : ColorStore.blue
           }
           opacity={on ? 1 : 0.2}
+          style={{ cursor: rotating ? "all-scroll" : "pointer" }}
         />
         <path key={-i - 1} d={spacePathData} fill="transparent" />
       </g>
@@ -118,12 +119,12 @@ export default class Pie extends Component {
     return -scaleStore.offset * arc;
   };
 
-  view({ scaleStore }) {
+  viewSlices({ scaleStore, rotating }) {
     const notes = scaleStore.notes;
     const spaceArc = 1 / 500;
     const arc = 1 / 12;
     const noteArc = arc - spaceArc;
-    const slices = notes.map((on, i) => {
+    return notes.map((on, i) => {
       return (
         <Playable
           key={i}
@@ -134,13 +135,16 @@ export default class Pie extends Component {
               onMouseDown={onMouseDown}
               on={on}
               offset={i}
+              rotating={rotating}
               onClick={this.onToggles[i]}
             />
           )}
         />
       );
     });
+  }
 
+  view({ scaleStore }) {
     // origin
     const o = -1 - padding;
     // side length
@@ -168,8 +172,9 @@ export default class Pie extends Component {
               stroke={ColorStore.blue}
               strokeWidth={0.01}
               opacity={0.2}
+              style={{ cursor: "all-scroll" }}
             />
-            {slices}
+            {this.viewSlices({ scaleStore, rotating })}
           </svg>
         )}
       />
