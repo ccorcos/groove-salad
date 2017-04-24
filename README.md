@@ -15,7 +15,6 @@ open http://localhost:8080/
 - slidable keyboard with snap
 - changing the offset should leave the red notes in the same place on the keyboard
 - make all the buttons outside the circle green
-- rotatable change offset in realtime without waiting for snap
 
 - polyphonic synth
 - visualize which notes are pressed

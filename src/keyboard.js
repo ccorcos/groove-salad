@@ -14,13 +14,17 @@ function repeat(list, n) {
   return acc;
 }
 
+const buttonWidth = 48;
+const buttonMargin = 8;
+const width = buttonWidth * 6 + buttonMargin * 6 * 2;
+
 export default class Keyboard extends Component {
   getKeyboardContainerStyle() {
     return {
       display: "flex",
-      flex: 1,
       marginRight: 8,
-      overflow: "hidden"
+      overflow: "hidden",
+      width: width
     };
   }
 
@@ -42,25 +46,16 @@ export default class Keyboard extends Component {
     return {
       flexShrink: 0,
       height: 80,
-      width: 48,
-      margin: 8,
+      width: buttonWidth,
+      margin: buttonMargin,
       borderRadius: 4,
       backgroundColor: isRoot ? ColorStore.red : ColorStore.blue,
       opacity: 0.2
     };
   }
 
-  onSnap = angle => {
-    console.log("aw snap!");
-  };
-
-  view({ scaleStore }) {
-    // need to register these as deps because we might not use them on the first render
-    const scaleOffset = scaleStore.offset;
-    const scaleBase = scaleStore.base;
-
-    // playable notes in the scale
-    const playableNotes = scaleStore.notes.reduce(
+  getPlayableNotes() {
+    return scaleStore.notes.reduce(
       (acc, on, note) => {
         if (on) {
           acc.push(note);
@@ -69,6 +64,26 @@ export default class Keyboard extends Component {
       },
       []
     );
+  }
+
+  onSnap = offset => {
+    const playableNotes = this.getPlayableNotes();
+    const notesPerOctave = playableNotes.length;
+    const noteWidth = buttonWidth + 2 * buttonMargin;
+    const min = width - notesPerOctave * 8 * noteWidth;
+    const max = 0;
+    const snap = Math.round(offset.x / noteWidth) * noteWidth;
+    console.log(snap, min);
+    return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
+  };
+
+  view({ scaleStore }) {
+    // need to register these as deps because we might not use them on the first render
+    const scaleOffset = scaleStore.offset;
+    const scaleBase = scaleStore.base;
+
+    // playable notes in the scale
+    const playableNotes = this.getPlayableNotes();
 
     const notesPerOctave = playableNotes.length;
     const allNotes = repeat(playableNotes, 8);
