@@ -62,10 +62,10 @@ export default class Keyboard extends Component {
 
       // Compute the index of the note where the current offset is.
       const nthNoteInScale = playableNotes.indexOf(modPos(scaleOffset, 12));
-      const scaleNote = scaleBase + scaleOffset;
-      const scaleOctave = Math.floor(scaleNote / 12);
-      const rootOffsetIndex = scaleOctave * notesPerOctave + nthNoteInScale;
-      const slide = scaleOctave * notesPerOctave + nthNoteInScale;
+      const rootNote = scaleBase + scaleOffset;
+      const rootOctave = Math.floor(rootNote / 12);
+      const rootOffsetIndex = rootOctave * notesPerOctave + nthNoteInScale;
+      const slide = rootOctave * notesPerOctave + nthNoteInScale;
 
       return (
         <Playable
