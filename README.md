@@ -12,10 +12,7 @@ open http://localhost:8080/
 
 ## To Do
 
-- onMouseOut events
-- changing the offset should leave the red notes in the same place on the keyboard
-- make all the buttons outside the circle green
-
+- sync keys with keyboard position
 - polyphonic synth
 - visualize which notes are pressed
 

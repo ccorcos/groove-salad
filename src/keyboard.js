@@ -16,6 +16,7 @@ function repeat(list, n) {
 
 const buttonWidth = 48;
 const buttonMargin = 8;
+const buttonSize = buttonWidth + 2 * buttonMargin;
 const width = buttonWidth * 6 + buttonMargin * 6 * 2;
 
 export default class Keyboard extends Component {
@@ -33,12 +34,23 @@ export default class Keyboard extends Component {
   }
 
   getKeyboardStyle({ sliding, offset }) {
+    const scaleBase = this.props.scaleStore.base;
+    const scaleOffset = this.props.scaleStore.offset;
+    const rootOffset = scaleBase + scaleOffset;
+    const playableNotes = this.getPlayableNotes();
+    const notesPerOctave = playableNotes.length;
+    const nthNoteInScale = playableNotes.indexOf(modPos(rootOffset, 12));
+
+    const rootOffsetPx = (Math.floor(rootOffset / 12) * notesPerOctave +
+      nthNoteInScale) *
+      buttonSize;
+
     return {
       height: 200,
       flex: 1,
       display: "flex",
       alignItems: "center",
-      transform: `translateX(${offset.x}px)`,
+      transform: `translateX(${offset.x - rootOffsetPx}px)`,
       transition: !sliding ? "transform ease-in-out 0.5s" : undefined
     };
   }
@@ -57,7 +69,7 @@ export default class Keyboard extends Component {
   }
 
   getPlayableNotes() {
-    return scaleStore.notes.reduce(
+    return this.props.scaleStore.notes.reduce(
       (acc, on, note) => {
         if (on) {
           acc.push(note);
@@ -72,22 +84,28 @@ export default class Keyboard extends Component {
     if (offset.x === null) {
       return offset;
     }
+    const scaleBase = this.props.scaleStore.base;
+    const scaleOffset = this.props.scaleStore.offset;
+    const rootNote = scaleBase + scaleOffset;
+    const rootOctave = Math.floor(rootNote / 12);
     const playableNotes = this.getPlayableNotes();
     const notesPerOctave = playableNotes.length;
+    const nthNoteInScale = playableNotes.indexOf(modPos(rootNote, 12));
+    const rootOffsetIndex = rootOctave * notesPerOctave + nthNoteInScale;
+    const totalNotes = notesPerOctave * 8;
     if (notesPerOctave === 0) {
       return { y: offset.y, x: 0 };
     }
-    const noteWidth = buttonWidth + 2 * buttonMargin;
-    const min = width - notesPerOctave * 8 * noteWidth;
-    const max = 0;
-    const snap = Math.round(offset.x / noteWidth) * noteWidth;
+    const min = width - (totalNotes - rootOffsetIndex) * buttonSize;
+    const max = rootOffsetIndex * buttonSize;
+    const snap = Math.round(offset.x / buttonSize) * buttonSize;
     return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
   };
 
   viewButtons({ sliding }) {
     // need to register these as deps because we might not use them on the first render
-    const scaleOffset = scaleStore.offset;
-    const scaleBase = scaleStore.base;
+    const scaleOffset = this.props.scaleStore.offset;
+    const scaleBase = this.props.scaleStore.base;
 
     // playable notes in the scale
     const playableNotes = this.getPlayableNotes();
