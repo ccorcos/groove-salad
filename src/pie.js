@@ -163,7 +163,7 @@ export default class Pie extends Component {
       return (
         <Playable
           scaleStore={this.props.scaleStore}
-          key={i}
+          key={note}
           note={note}
           render={({ onMouseUp, onMouseDown, onMouseLeave }) => (
             <Slice
