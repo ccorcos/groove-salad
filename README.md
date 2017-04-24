@@ -12,9 +12,12 @@ open http://localhost:8080/
 
 ## To Do
 
-- change number of notes to 12
+- release note more consistently
 - touch events
+- design for iphone
 
+- scale presets
+-
 
 ---
 
