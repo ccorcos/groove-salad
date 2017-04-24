@@ -12,13 +12,11 @@ open http://localhost:8080/
 
 ## To Do
 
-- polyphonic synth
+- make this work with different scale base number
+- make sound with frequency rather
 - visualize which notes are pressed
-
-- use synth with frequencies and change the the number of notes (12)
-
+- change number of notes to 12
 - touch events
-- change 12!
 
 
 
