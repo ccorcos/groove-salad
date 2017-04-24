@@ -20,6 +20,10 @@ const buttonSize = buttonWidth + 2 * buttonMargin;
 const width = buttonWidth * 6 + buttonMargin * 6 * 2;
 
 export default class Keyboard extends Component {
+  keyboardStore = Store({
+    offset: 0 // inversion
+  });
+
   getKeyboardContainerStyle() {
     return {
       display: "flex",
@@ -105,9 +109,11 @@ export default class Keyboard extends Component {
     if (notesPerOctave === 0) {
       return { y: offset.y, x: 0 };
     }
+    const inversionOffset = Math.round(offset.x / buttonSize);
+    this.keyboardStore.offset = inversionOffset;
     const min = width - (totalNotes - rootOffsetIndex) * buttonSize;
     const max = rootOffsetIndex * buttonSize;
-    const snap = Math.round(offset.x / buttonSize) * buttonSize;
+    const snap = inversionOffset * buttonSize;
     return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
   };
 
@@ -117,7 +123,8 @@ export default class Keyboard extends Component {
       playableNotes,
       notesPerOctave,
       rootOctave,
-      nthNoteInScale
+      nthNoteInScale,
+      rootOffsetIndex
     } = this.deriveOffsetStuff();
 
     return repeat(playableNotes, 8).map((note, index) => {
@@ -125,7 +132,9 @@ export default class Keyboard extends Component {
 
       const octave = Math.floor(index / notesPerOctave);
       const offsetNote = note + octave * 12;
-      const slide = rootOctave * notesPerOctave + nthNoteInScale;
+      const slide = rootOctave * notesPerOctave +
+        nthNoteInScale -
+        this.keyboardStore.offset;
 
       return (
         <Playable
