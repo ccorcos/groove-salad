@@ -81,6 +81,10 @@ export default class Rotatable extends Component {
     }
   };
 
+  handleMouseLeave = e => {
+    this.handleMouseUp(e);
+  };
+
   handleMouseUp = e => {
     this.propagateEvent("onMouseUp");
     const rotateStore = this.rotateStore;
@@ -110,6 +114,7 @@ export default class Rotatable extends Component {
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
       onMouseMove: this.handleMouseMove,
+      onMouseLeave: this.handleMouseLeave,
       rotation: this.rotateStore.offset,
       rotating: this.rotateStore.down
     });

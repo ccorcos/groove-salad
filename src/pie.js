@@ -18,7 +18,9 @@ function mergeStyles(a, b) {
 class Slice extends Component {
   // source: https://hackernoon.com/a-simple-pie-chart-in-svg-dbdd653b6936
 
-  view({ on, offset, onClick, onMouseUp, onMouseDown, rotating }) {
+  view(
+    { on, offset, onClick, onMouseUp, onMouseDown, onMouseLeave, rotating }
+  ) {
     const i = offset;
 
     // we have spacer arc
@@ -44,7 +46,12 @@ class Slice extends Component {
       `L 0 0` // Line
     ].join(" ");
     return (
-      <g onClick={onClick} onMouseUp={onMouseUp} onMouseDown={onMouseDown}>
+      <g
+        onClick={onClick}
+        onMouseUp={onMouseUp}
+        onMouseDown={onMouseDown}
+        onMouseLeave={onMouseLeave}
+      >
         <path
           d={notePathData}
           fill={
@@ -129,10 +136,11 @@ export default class Pie extends Component {
         <Playable
           key={i}
           note={i + scaleStore.base + scaleStore.offset}
-          render={({ onMouseUp, onMouseDown }) => (
+          render={({ onMouseUp, onMouseDown, onMouseLeave }) => (
             <Slice
               onMouseUp={onMouseUp}
               onMouseDown={onMouseDown}
+              onMouseLeave={onMouseLeave}
               on={on}
               offset={i}
               rotating={rotating}
@@ -155,12 +163,20 @@ export default class Pie extends Component {
         onSnap={this.onSnap}
         onChange={this.onSnap}
         render={(
-          { onMouseDown, onMouseUp, onMouseMove, rotation, rotating }
+          {
+            onMouseDown,
+            onMouseUp,
+            onMouseMove,
+            onMouseLeave,
+            rotation,
+            rotating
+          }
         ) => (
           <svg
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             onMouseMove={onMouseMove}
+            onMouseLeave={onMouseLeave}
             style={this.getStyle({ rotation, rotating })}
             viewBox={`${o} ${o} ${l} ${l}`}
           >

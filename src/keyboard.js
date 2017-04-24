@@ -81,7 +81,6 @@ export default class Keyboard extends Component {
     const min = width - notesPerOctave * 8 * noteWidth;
     const max = 0;
     const snap = Math.round(offset.x / noteWidth) * noteWidth;
-    console.log(snap, min);
     return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
   };
 
@@ -114,16 +113,12 @@ export default class Keyboard extends Component {
           key={offsetNote}
           nth={index - slide}
           note={offsetNote}
-          render={(
-            {
-              onMouseDown,
-              onMouseUp
-            }
-          ) => (
+          render={({ onMouseDown, onMouseUp, onMouseLeave }) => (
             <div
               className="button"
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
+              onMouseLeave={onMouseLeave}
               style={this.getKeyButtonStyle({ isRoot, sliding })}
             />
           )}
@@ -142,6 +137,7 @@ export default class Keyboard extends Component {
             onMouseDown,
             onMouseUp,
             onMouseMove,
+            onMouseLeave,
             offset,
             sliding
           }
@@ -151,6 +147,7 @@ export default class Keyboard extends Component {
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             onMouseMove={onMouseMove}
+            onMouseLeave={onMouseLeave}
           >
             <div style={this.getKeyboardStyle({ sliding, offset })}>
               {this.viewButtons({ sliding })}

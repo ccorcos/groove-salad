@@ -52,6 +52,10 @@ export default class Slidable extends Component {
     }
   };
 
+  handleMouseLeave = e => {
+    this.handleMouseUp(e);
+  };
+
   handleMouseUp = e => {
     this.propagateEvent("onMouseUp");
     const slideStore = this.slideStore;
@@ -79,6 +83,7 @@ export default class Slidable extends Component {
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
       onMouseMove: this.handleMouseMove,
+      onMouseLeave: this.handleMouseLeave,
       offset: this.slideStore.offset,
       sliding: this.slideStore.down
     });

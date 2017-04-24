@@ -12,14 +12,13 @@ open http://localhost:8080/
 
 ## To Do
 
-- slidable keyboard with snap
+- onMouseOut events
 - changing the offset should leave the red notes in the same place on the keyboard
 - make all the buttons outside the circle green
 
 - polyphonic synth
 - visualize which notes are pressed
 
-- onMouseOut events
 - use synth with frequencies and change the the number of notes (12)
 
 - touch events

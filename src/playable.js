@@ -103,23 +103,20 @@ export default class Playable extends Component {
     synth.triggerAttack(numberToLetter(this.props.note));
   };
 
+  handleMouseLeave = e => {
+    this.handleMouseUp();
+  };
+
   handleMouseUp = e => {
     this.propagateEvent("onMouseUp", e);
     synth.triggerRelease();
   };
 
-  view(
-    {
-      character,
-      nth,
-      render,
-      note,
-      ...props
-    }
-  ) {
-    return this.props.render({
+  view({ render }) {
+    return render({
       onMouseDown: this.handleMouseDown,
-      onMouseUp: this.handleMouseUp
+      onMouseUp: this.handleMouseUp,
+      onMouseLeave: this.handleMouseLeave
     });
   }
 }
