@@ -141,6 +141,7 @@ export default class Pie extends Component {
               onMouseUp={onMouseUp}
               onMouseDown={onMouseDown}
               onMouseLeave={onMouseLeave}
+              scaleStore={scaleStore}
               on={on}
               offset={i}
               rotating={rotating}
