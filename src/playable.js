@@ -15,7 +15,12 @@ var filter = new Tone.Filter({
   gain: 0
 }).connect(freeverb);
 
-const synth = new Tone.MonoSynth().connect(filter);
+var synth = new Tone.PolySynth({
+  polyphony: 4,
+  // volume:0,
+  // detune:0,
+  voice: Tone.MonoSynth
+}).connect(filter);
 
 const numberToLetter = n => {
   const letter = [
@@ -45,12 +50,23 @@ export default class Playable extends Component {
   //   element: <div/>
   // };
 
+  playableStore = Store({
+    down: false
+  });
+
   willMount() {
     this.startKeyboardListener();
   }
 
   willUnmount() {
     this.stopKeyboardListener();
+    this.triggerRelease();
+  }
+
+  willUpdate(props) {
+    if (this.props.note !== props.note) {
+      this.triggerRelease();
+    }
   }
 
   startKeyboardListener = () => {
@@ -74,6 +90,9 @@ export default class Playable extends Component {
   }
 
   handleKeyDown = e => {
+    if (this.playableStore.down) {
+      return;
+    }
     const char = this.getCharacter();
     if (char) {
       if (e.code === `Key${char.toUpperCase()}`) {
@@ -98,9 +117,19 @@ export default class Playable extends Component {
     }
   }
 
+  triggerAttack() {
+    this.playableStore.down = true;
+    synth.triggerAttack(numberToLetter(this.props.note));
+  }
+
+  triggerRelease() {
+    this.playableStore.down = false;
+    synth.triggerRelease(numberToLetter(this.props.note));
+  }
+
   handleMouseDown = e => {
     this.propagateEvent("onMouseDown", e);
-    synth.triggerAttack(numberToLetter(this.props.note));
+    this.triggerAttack();
   };
 
   handleMouseLeave = e => {
@@ -109,7 +138,7 @@ export default class Playable extends Component {
 
   handleMouseUp = e => {
     this.propagateEvent("onMouseUp", e);
-    synth.triggerRelease();
+    this.triggerRelease();
   };
 
   view({ render }) {

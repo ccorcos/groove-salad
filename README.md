@@ -12,7 +12,6 @@ open http://localhost:8080/
 
 ## To Do
 
-- sync keys with keyboard position
 - polyphonic synth
 - visualize which notes are pressed
 
