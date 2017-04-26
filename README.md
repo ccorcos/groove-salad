@@ -14,10 +14,14 @@ open http://localhost:8080/
 
 - release note more consistently
 - touch events
-- design for iphone
-
 - scale presets
--
+- change key wheel
+- hints (frequencies, letters, etc)
+- midi / osc output?
+- synth engine
+- design for iphone
+- rename to "Groove Salad" + favicon
+- Demo video
 
 ---
 
