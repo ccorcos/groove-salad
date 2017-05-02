@@ -27,32 +27,8 @@ export interface KeyboardProps {
 
 export default class Keyboard extends Component<KeyboardProps> {
 
-  offset = new Value(0)
-
-  deriveOffsetStuff() {
-    const scaleBase = this.props.scaleStore.base.get();
-    const scaleOffset = this.props.scaleStore.offset.get();
-    const semitones = this.props.scaleStore.semitones.get();
-    const rootNote = scaleBase + scaleOffset;
-    const rootOctave = Math.floor(rootNote / semitones);
-    const playableNotes = this.getPlayableNotes();
-    const notesPerOctave = playableNotes.length;
-    const nthNoteInScale = playableNotes.indexOf(modPos(rootNote, semitones));
-    const rootOffsetIndex = rootOctave * notesPerOctave + nthNoteInScale;
-    const totalNotes = notesPerOctave * 8;
-    return {
-      semitones,
-      scaleBase,
-      scaleOffset,
-      rootNote,
-      rootOctave,
-      playableNotes,
-      notesPerOctave,
-      nthNoteInScale,
-      rootOffsetIndex,
-      totalNotes
-    };
-  }
+  // offset of playable notes for making inversions
+  noteOffset = new Value(0)
 
   getKeyboardContainerStyle(): React.CSSProperties {
     return {
@@ -68,13 +44,13 @@ export default class Keyboard extends Component<KeyboardProps> {
   }
 
   getKeyboardStyle({ dragging, offset }): React.CSSProperties {
-    const { rootOffsetIndex } = this.deriveOffsetStuff();
+    const rootNoteIndex = this.props.scaleStore.rootNoteIndex.get()
     return {
       height: 200,
       flex: 1,
       display: "flex",
       alignItems: "center",
-      transform: `translateX(${offset.x - rootOffsetIndex * buttonSize}px)`,
+      transform: `translateX(${offset.x - rootNoteIndex * buttonSize}px)`,
       transition: !dragging ? "transform ease-in-out 0.5s" : undefined
     };
   }
@@ -110,40 +86,35 @@ export default class Keyboard extends Component<KeyboardProps> {
     if (offset.x === null) {
       return offset;
     }
-    const {
-      notesPerOctave,
-      rootOffsetIndex,
-      totalNotes
-    } = this.deriveOffsetStuff();
+    const notesPerOctave = this.props.scaleStore.notesPerOctave.get()
+    const rootNoteIndex = this.props.scaleStore.rootNoteIndex.get()
+    const totalNotes = this.props.scaleStore.totalNotes.get()
     if (notesPerOctave === 0) {
       return { y: offset.y, x: 0 };
     }
     const inversionOffset = Math.round(offset.x / buttonSize);
-    this.offset.set(inversionOffset);
-    const min = width - (totalNotes - rootOffsetIndex) * buttonSize;
-    const max = rootOffsetIndex * buttonSize;
+    this.noteOffset.set(inversionOffset);
+    const min = width - (totalNotes - rootNoteIndex) * buttonSize;
+    const max = rootNoteIndex * buttonSize;
     const snap = inversionOffset * buttonSize;
     return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
   };
 
   viewButtons({ dragging }) {
-    const {
-      scaleOffset,
-      playableNotes,
-      notesPerOctave,
-      rootOctave,
-      nthNoteInScale,
-      rootOffsetIndex,
-      semitones
-    } = this.deriveOffsetStuff();
+    const notesPerOctave = this.props.scaleStore.notesPerOctave.get()
+    const semitonesPerOctave = this.props.scaleStore.semitonesPerOctave.get()
+    const semitoneOffset = this.props.scaleStore.semitoneOffset.get()
+    const playableNotes = this.props.scaleStore.playableNotes.get()
+    const rootOctave = this.props.scaleStore.rootOctave.get()
+    const rootNoteOffset = this.props.scaleStore.rootNoteOffset.get()
 
     const pressedNotes = synthStore.pressed.get();
     return repeat(playableNotes, 8).map((note, index) => {
-      const isRoot = modPos(note, semitones) === modPos(scaleOffset, semitones);
+      const isRoot = modPos(note, semitonesPerOctave) === modPos(semitoneOffset, semitonesPerOctave);
 
       const octave = Math.floor(index / notesPerOctave);
-      const offsetNote = note + octave * semitones;
-      const slide = rootOctave * notesPerOctave + nthNoteInScale - this.offset.get();
+      const offsetNote = note + octave * semitonesPerOctave;
+      const slide = rootOctave * notesPerOctave + rootNoteOffset - this.noteOffset.get();
       const pressed = pressedNotes[offsetNote];
       return (
         <Playable

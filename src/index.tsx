@@ -22,7 +22,7 @@ const noScrollbar = css({
 });
 
 const scaleStore = new ScaleStore()
-// window.scaleStore = scaleStore;
+window["scaleStore"] = scaleStore;
 
 export default class App extends Component<{}> {
   view() {

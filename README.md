@@ -12,11 +12,8 @@ open http://localhost:8080/
 
 ## To Do
 
-- refactor onChange into reactive listeners
+- keyboard slide offset and the note offset should be a constraint
 - move playable to creative-ux
-- configure library output structure
-  - reactive-magic
-  - creative-ux
 - flyd and tone types
 
 

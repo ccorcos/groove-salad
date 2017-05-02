@@ -43,13 +43,13 @@ class Slice extends Component<SliceProps> {
       onMouseLeave,
       rotating,
       scaleStore
-    }
+    }: SliceProps
   ) {
     const i = offset;
 
-    const semitones = scaleStore.semitones.get();
+    const semitonesPerOctave = scaleStore.semitonesPerOctave.get();
     // we have spacer arc
-    const arc = 1 / semitones;
+    const arc = 1 / semitonesPerOctave;
     const spaceArc = 1 / 500;
     const noteArc = arc - spaceArc;
 
@@ -83,7 +83,7 @@ class Slice extends Component<SliceProps> {
         <path
           d={notePathData}
           fill={
-            i === modPos(scaleStore.offset.get(), semitones)
+            i === modPos(scaleStore.semitoneOffset.get(), semitonesPerOctave)
               ? accentColor
               : primaryColor
           }
@@ -116,11 +116,11 @@ export default class Pie extends Component<PieProps> {
   }
 
   getStyle({ rotation, rotating }): React.CSSProperties {
-    const semitones = this.props.scaleStore.semitones.get();
+    const semitonesPerOctave = this.props.scaleStore.semitonesPerOctave.get();
     return {
       height: 250,
       // align 0 at the top, and then rotate
-      transform: `rotate(${-90 - 360 / semitones / 2}deg) rotate(${rotation}rad)`,
+      transform: `rotate(${-90 - 360 / semitonesPerOctave / 2}deg) rotate(${rotation}rad)`,
       transformOrigin: "50% 50%",
       // animate snaps
       transition: !rotating ? "transform ease-in-out 0.5s" : undefined
@@ -132,21 +132,21 @@ export default class Pie extends Component<PieProps> {
   // REMEMBER: +offset is -angle
   onSnap = angle => {
     const { scaleStore } = this.props;
-    const semitones = scaleStore.semitones.get();
+    const semitonesPerOctave = scaleStore.semitonesPerOctave.get();
     // We know the arclength of each piece of pie
-    const arc = 2 * Math.PI / semitones;
+    const arc = 2 * Math.PI / semitonesPerOctave;
     // A +offset is a -angle, so we can find the normalized angle
-    const normA = angle + scaleStore.offset.get() * arc;
+    const normA = angle + scaleStore.semitoneOffset.get() * arc;
     // To find the closest not, we need to do some modular math. The distance of normA to the note of interest will be computed to the range of [-pi, +pi] so we can compare distances and add this distance to the angle to get the place to snap to
     let distance = 99;
     // Closest note should start at the previous offset index. modPos will take the offset and return something in the range of [0, 11]
-    let closest = modPos(scaleStore.offset.get(), semitones);
+    let closest = modPos(scaleStore.semitoneOffset.get(), semitonesPerOctave);
     scaleStore.notes.get().forEach((on, i) => {
       if (on) {
         // Normalize i by the offset, so an offset of 3 at and index of 3 is a normI of 0 and an offset of 3 at an index of 1 is 10.
         const normI = modPos(
-          modMinus(i, scaleStore.offset.get(), semitones),
-          semitones
+          modMinus(i, scaleStore.semitoneOffset.get(), semitonesPerOctave),
+          semitonesPerOctave
         );
         // Compute the distance to a note
         const dist = modMinus(normA, -normI * arc, 2 * Math.PI);
@@ -158,29 +158,29 @@ export default class Pie extends Component<PieProps> {
     });
     // If we don't have any notes on, then nap back to the previous offset
     if (distance === 99) {
-      return -scaleStore.offset * arc;
+      return -scaleStore.semitoneOffset.get() * arc;
     }
     // Add the distance to the closest note to the angle, and then divide by the arc length to get the offset. We'll round due to floating point precision
-    scaleStore.offset.set(Math.round((-angle + distance) / arc))
+    scaleStore.semitoneOffset.set(Math.round((-angle + distance) / arc))
     // Snap to the offset!
-    return -scaleStore.offset.get() * arc;
+    return -scaleStore.semitoneOffset.get() * arc;
   };
 
   viewSlices({ scaleStore, rotating }: { scaleStore: ScaleStore, rotating: boolean}) {
     const notes = scaleStore.notes.get();
-    const semitones = scaleStore.semitones.get();
+    const semitonesPerOctave = scaleStore.semitonesPerOctave.get();
     const spaceArc = 1 / 500;
-    const arc = 1 / semitones;
+    const arc = 1 / semitonesPerOctave;
     const noteArc = arc - spaceArc;
     return notes.map((on, i) => {
       // the circle spins so we need to offset the note index as well.
-      const noteIndex = modPos(i - scaleStore.offset.get(), semitones);
-      const note = noteIndex + scaleStore.base.get() + scaleStore.offset.get();
+      const noteIndex = modPos(i - scaleStore.semitoneOffset.get(), semitonesPerOctave);
+      const note = noteIndex + scaleStore.baseSemitone.get() + scaleStore.semitoneOffset.get();
 
       let pressed = false;
       const keys = Object.keys(synthStore.pressed.get())
       keys.forEach(pressedNote => {
-        if (modPos(parseInt(pressedNote), semitones) === modPos(note, semitones)) {
+        if (modPos(parseInt(pressedNote), semitonesPerOctave) === modPos(note, semitonesPerOctave)) {
           pressed = true;
         }
       });
