@@ -1,10 +1,10 @@
 import * as React from "react";
 import Component from "reactive-magic/component";
 import Playable from "./playable";
-import Rotatable from "creative-ux/components/Rotatable";
+import Rotatable from "./Rotatable";
 import colorStore from "../stores/Color";
 import synthStore from "../stores/Synth";
-import { modPos, modMinus } from "creative-ux/utils/mod-math";
+import { modPos, modMinus } from "../utils/mod-math";
 import ScaleStore from "../stores/Scale"
 
 // padding of the outer ring for spinning

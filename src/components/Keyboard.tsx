@@ -3,8 +3,8 @@ import { Value } from "reactive-magic";
 import Component from "reactive-magic/component"
 import Playable from "./playable";
 import colorStore, { hexToRgba } from "../stores/Color";
-import { modPos } from "creative-ux/utils/mod-math";
-import Draggable from "creative-ux/components/Draggable";
+import { modPos } from "../utils/mod-math";
+import Draggable from "./Draggable";
 import synthStore from "../stores/Synth";
 import ScaleStore from "../stores/Scale"
 

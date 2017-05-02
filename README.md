@@ -12,12 +12,12 @@ open http://localhost:8080/
 
 ## To Do
 
-- move playable to creative-ux?
-- persistent values that save to local stores
+- touch events
 - scale presets
 - synth reverb knob
+- persistent values that save to local stores
 
-- touch events
+
 - hints (frequencies, letters, etc)
 - midi / osc output?
 
@@ -26,6 +26,7 @@ open http://localhost:8080/
 - rename to "Groove Salad" + favicon
 - Demo video
 
+- better performance when rotating pie?
 - keyboard slide offset and the note offset should be a constraint
 - rotating the pie should have a min and max just like the keyboard
 

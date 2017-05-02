@@ -10,6 +10,10 @@ const freeverb = new Tone.Freeverb({
   dampening: 30000
 }).toMaster();
 
+// window.addEventListener("mousemove", e => {
+//   freeverb.set("roomSize", e.pageX / window.innerWidth)
+// })
+
 var filter = new Tone.Filter({
   type: "lowpass",
   frequency: 250,

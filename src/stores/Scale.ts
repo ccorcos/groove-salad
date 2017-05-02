@@ -1,5 +1,5 @@
 import { Value, DerivedValue } from "reactive-magic";
-import { modPos } from "creative-ux/utils/mod-math"
+import { modPos } from "../utils/mod-math"
 
 function emptyNotes(n: number): Array<boolean> {
   return Array(n).fill(false)
