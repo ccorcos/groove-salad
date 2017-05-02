@@ -72,6 +72,7 @@ export default class Playable extends Component<PlayableProps> {
 
   willUnmount() {
     this.stopKeyboardListener();
+    this.stopMouseListener();
     this.triggerRelease();
   }
 
@@ -89,6 +90,14 @@ export default class Playable extends Component<PlayableProps> {
   stopKeyboardListener = () => {
     window.removeEventListener("keydown", this.handleKeyDown);
     window.removeEventListener("keyup", this.handleKeyUp);
+  };
+
+  startMouseListener = () => {
+    window.addEventListener("mouseup", this.handleMouseUp);
+  };
+
+  stopMouseListener = () => {
+    window.removeEventListener("mouseup", this.handleMouseUp);
   };
 
   getCharacter() {
@@ -149,21 +158,18 @@ export default class Playable extends Component<PlayableProps> {
 
   handleMouseDown = (e?: any) => {
     this.triggerAttack();
-  };
-
-  handleMouseLeave = (e?: any) => {
-    this.handleMouseUp();
+    this.startMouseListener()
   };
 
   handleMouseUp = (e?: any) => {
     this.triggerRelease();
+    this.stopMouseListener()
   };
 
   view({ render }) {
     return render({
       onMouseDown: this.handleMouseDown,
       onMouseUp: this.handleMouseUp,
-      onMouseLeave: this.handleMouseLeave
     });
   }
 }

@@ -12,21 +12,22 @@ open http://localhost:8080/
 
 ## To Do
 
-- keyboard slide offset and the note offset should be a constraint
-- move playable to creative-ux
-- flyd and tone types
-
-
-- release note more consistently
-- touch events
+- move playable to creative-ux?
+- persistent values that save to local stores
 - scale presets
-- change key wheel
+- synth reverb knob
+
+- touch events
 - hints (frequencies, letters, etc)
 - midi / osc output?
+
 - synth engine
 - design for iphone
 - rename to "Groove Salad" + favicon
 - Demo video
+
+- keyboard slide offset and the note offset should be a constraint
+- rotating the pie should have a min and max just like the keyboard
 
 ---
 

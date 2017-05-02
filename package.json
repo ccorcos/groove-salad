@@ -12,7 +12,7 @@
   "author": "Chet Corcos <ccorcos@gmail.com> (http://www.chetcorcos.com/)",
   "license": "MIT",
   "dependencies": {
-    "creative-ux": "^1.1.0",
+    "creative-ux": "^1.4.0",
     "glamor": "^2.20.24",
     "lodash": "^4.17.4",
     "ramda": "^0.23.0",

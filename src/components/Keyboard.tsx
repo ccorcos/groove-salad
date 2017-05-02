@@ -107,6 +107,7 @@ export default class Keyboard extends Component<KeyboardProps> {
     const playableNotes = this.props.scaleStore.playableNotes.get()
     const rootOctave = this.props.scaleStore.rootOctave.get()
     const rootNoteOffset = this.props.scaleStore.rootNoteOffset.get()
+    const noteOffset = this.noteOffset.get()
 
     const pressedNotes = synthStore.pressed.get();
     return repeat(playableNotes, 8).map((note, index) => {
@@ -114,12 +115,12 @@ export default class Keyboard extends Component<KeyboardProps> {
 
       const octave = Math.floor(index / notesPerOctave);
       const offsetNote = note + octave * semitonesPerOctave;
-      const slide = rootOctave * notesPerOctave + rootNoteOffset - this.noteOffset.get();
+      const slide = rootOctave * notesPerOctave + rootNoteOffset - noteOffset
       const pressed = pressedNotes[offsetNote];
       return (
         <Playable
           scaleStore={this.props.scaleStore}
-          key={offsetNote}
+          key={index - slide}
           nth={index - slide}
           note={offsetNote}
           render={({ onMouseDown, onMouseUp, onMouseLeave }) => (
