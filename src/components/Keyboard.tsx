@@ -1,11 +1,11 @@
-import React from "react";
-import { Component, Store } from "reactive-magic";
-import SizeStore from "./stores/size";
+import * as React from "react";
+import { Component, Value } from "reactive-magic";
 import Playable from "./playable";
-import ColorStore, { hexToRgba } from "./stores/color";
-import { modPos } from "./utils/mod-math";
-import Slidable from "./slidable";
-import SynthStore from "./stores/synth";
+import colorStore, { hexToRgba } from "../stores/Color";
+import { modPos } from "creative-ux/build/lib/utils/mod-math";
+import Draggable from "creative-ux/build/lib/components/Draggable";
+import synthStore from "../stores/Synth";
+import ScaleStore from "../stores/Scale"
 
 function repeat(list, n) {
   let acc = [];
@@ -20,28 +20,18 @@ const buttonMargin = 8;
 const buttonSize = buttonWidth + 2 * buttonMargin;
 const width = buttonWidth * 6 + buttonMargin * 6 * 2;
 
-export default class Keyboard extends Component {
-  keyboardStore = Store({
-    offset: 0 // inversion
-  });
+export interface KeyboardProps {
+  scaleStore: ScaleStore
+}
 
-  getKeyboardContainerStyle() {
-    return {
-      display: "flex",
-      margin: 8,
-      overflow: "hidden",
-      width: width,
-      border: `1px solid black`,
-      borderRadius: 4,
-      borderColor: hexToRgba(ColorStore.blue, 0.2),
-      cursor: "ew-resize"
-    };
-  }
+export default class Keyboard extends Component<KeyboardProps> {
+
+  offset = new Value(0)
 
   deriveOffsetStuff() {
-    const scaleBase = this.props.scaleStore.base;
-    const scaleOffset = this.props.scaleStore.offset;
-    const semitones = this.props.scaleStore.semitones;
+    const scaleBase = this.props.scaleStore.base.get();
+    const scaleOffset = this.props.scaleStore.offset.get();
+    const semitones = this.props.scaleStore.semitones.get();
     const rootNote = scaleBase + scaleOffset;
     const rootOctave = Math.floor(rootNote / semitones);
     const playableNotes = this.getPlayableNotes();
@@ -63,7 +53,20 @@ export default class Keyboard extends Component {
     };
   }
 
-  getKeyboardStyle({ sliding, offset }) {
+  getKeyboardContainerStyle(): React.CSSProperties {
+    return {
+      display: "flex",
+      margin: 8,
+      overflow: "hidden",
+      width: width,
+      border: `1px solid black`,
+      borderRadius: 4,
+      borderColor: hexToRgba(colorStore.primary.get(), 0.2),
+      cursor: "ew-resize"
+    };
+  }
+
+  getKeyboardStyle({ dragging, offset }): React.CSSProperties {
     const { rootOffsetIndex } = this.deriveOffsetStuff();
     return {
       height: 200,
@@ -71,25 +74,27 @@ export default class Keyboard extends Component {
       display: "flex",
       alignItems: "center",
       transform: `translateX(${offset.x - rootOffsetIndex * buttonSize}px)`,
-      transition: !sliding ? "transform ease-in-out 0.5s" : undefined
+      transition: !dragging ? "transform ease-in-out 0.5s" : undefined
     };
   }
 
-  getKeyButtonStyle({ isRoot, sliding, pressed }) {
+  getKeyButtonStyle({ isRoot, dragging, pressed }): React.CSSProperties {
+    const primaryColor = colorStore.primary.get()
+    const accentColor = colorStore.accent.get()
     return {
       flexShrink: 0,
       height: 80,
       width: buttonWidth,
       margin: buttonMargin,
       borderRadius: 4,
-      backgroundColor: isRoot ? ColorStore.red : ColorStore.blue,
+      backgroundColor: isRoot ? accentColor : primaryColor,
       opacity: pressed ? 1 : 0.2,
-      cursor: !sliding && "pointer"
+      cursor: !dragging && "pointer"
     };
   }
 
   getPlayableNotes() {
-    return this.props.scaleStore.notes.reduce(
+    return this.props.scaleStore.notes.get().reduce(
       (acc, on, note) => {
         if (on) {
           acc.push(note);
@@ -113,14 +118,14 @@ export default class Keyboard extends Component {
       return { y: offset.y, x: 0 };
     }
     const inversionOffset = Math.round(offset.x / buttonSize);
-    this.keyboardStore.offset = inversionOffset;
+    this.offset.set(inversionOffset);
     const min = width - (totalNotes - rootOffsetIndex) * buttonSize;
     const max = rootOffsetIndex * buttonSize;
     const snap = inversionOffset * buttonSize;
     return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
   };
 
-  viewButtons({ sliding }) {
+  viewButtons({ dragging }) {
     const {
       scaleOffset,
       playableNotes,
@@ -131,15 +136,13 @@ export default class Keyboard extends Component {
       semitones
     } = this.deriveOffsetStuff();
 
-    const pressedNotes = SynthStore.pressed;
+    const pressedNotes = synthStore.pressed.get();
     return repeat(playableNotes, 8).map((note, index) => {
       const isRoot = modPos(note, semitones) === modPos(scaleOffset, semitones);
 
       const octave = Math.floor(index / notesPerOctave);
       const offsetNote = note + octave * semitones;
-      const slide = rootOctave * notesPerOctave +
-        nthNoteInScale -
-        this.keyboardStore.offset;
+      const slide = rootOctave * notesPerOctave + nthNoteInScale - this.offset.get();
       const pressed = pressedNotes[offsetNote];
       return (
         <Playable
@@ -153,7 +156,7 @@ export default class Keyboard extends Component {
               onMouseDown={onMouseDown}
               onMouseUp={onMouseUp}
               onMouseLeave={onMouseLeave}
-              style={this.getKeyButtonStyle({ isRoot, sliding, pressed })}
+              style={this.getKeyButtonStyle({ isRoot, dragging, pressed })}
             />
           )}
         />
@@ -163,28 +166,16 @@ export default class Keyboard extends Component {
 
   view({ scaleStore }) {
     return (
-      <Slidable
+      <Draggable
         onSnap={this.onSnap}
-        filterTarget={target => target.className !== "button"}
-        render={(
-          {
-            onMouseDown,
-            onMouseUp,
-            onMouseMove,
-            onMouseLeave,
-            offset,
-            sliding
-          }
-        ) => (
+        filterTarget={target => (target as Element).className !== "button"}
+        render={({onMouseDown, offset, dragging}) => (
           <div
             style={this.getKeyboardContainerStyle()}
             onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-            onMouseMove={onMouseMove}
-            onMouseLeave={onMouseLeave}
           >
-            <div style={this.getKeyboardStyle({ sliding, offset })}>
-              {this.viewButtons({ sliding })}
+            <div style={this.getKeyboardStyle({ dragging, offset })}>
+              {this.viewButtons({ dragging })}
             </div>
           </div>
         )}

@@ -12,6 +12,15 @@ open http://localhost:8080/
 
 ## To Do
 
+- convert all to typescript
+- get everything working (Rotatable, etc)
+- stricter types on Component class
+- upgrade everything (reactive magic, example, creative ux, groove salad)
+- move playable to creative-ux
+- configure output structure
+- flyd and tone types
+
+
 - release note more consistently
 - touch events
 - scale presets

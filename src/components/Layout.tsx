@@ -1,10 +1,16 @@
-import React from "react";
-import { Component, Store } from "reactive-magic";
-import SizeStore from "./stores/size";
+import * as React from "react";
+import { Component } from "reactive-magic";
+import windowSize from "../stores/WindowSize";
 
-export default class Layout extends Component {
+interface LayoutProps {
+  circle: JSX.Element
+  keyboard: JSX.Element
+}
+
+export default class Layout extends Component<LayoutProps> {
   getOrientation() {
-    if (SizeStore.height > SizeStore.width) {
+    const { height, width } = windowSize.get();
+    if (height > width) {
       return {
         height: "100vw",
         width: "100vh",
@@ -28,7 +34,7 @@ export default class Layout extends Component {
     });
   }
 
-  view(props) {
+  view(props: LayoutProps) {
     return (
       <div style={this.getStyle()}>
         <div style={{ padding: 8 }}>

@@ -1,7 +1,8 @@
-import React from "react";
+import * as React from "react";
 import Tone from "tone";
-import { Component, Store } from "reactive-magic";
-import SynthStore from "./stores/synth";
+import { Component, Value } from "reactive-magic";
+import synthStore from "../stores/Synth";
+import ScaleStore from "../stores/Scale"
 
 const freeverb = new Tone.Freeverb({
   roomSize: 0.50,
@@ -44,16 +45,25 @@ const numberToLetter = n => {
 
 const keyboard = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
 
-export default class Playable extends Component {
-  // static defaultProps = {
-  //   character: "A",
-  //   note: 60,
-  //   element: <div/>
-  // };
+export type PlayEvent = React.MouseEvent<Element> | MouseEvent
 
-  playableStore = Store({
-    down: false
-  });
+interface RenderProps {
+  onMouseDown(e: PlayEvent): void
+  onMouseUp(e: PlayEvent): void
+  onMouseLeave(e: PlayEvent): void
+}
+
+interface PlayableProps {
+  character?: string
+  note?: number
+  nth?: number
+  scaleStore: ScaleStore
+  render(p: RenderProps): JSX.Element
+}
+
+export default class Playable extends Component<PlayableProps> {
+
+  down = new Value(false)
 
   willMount() {
     this.startKeyboardListener();
@@ -90,66 +100,61 @@ export default class Playable extends Component {
     return;
   }
 
-  handleKeyDown = e => {
-    if (this.playableStore.down) {
+  handleKeyDown = (e: KeyboardEvent) => {
+    if (this.down.get()) {
       return;
     }
     const char = this.getCharacter();
     if (char) {
       if (e.code === `Key${char.toUpperCase()}`) {
-        this.handleMouseDown();
+        this.handleMouseDown(e);
       }
     }
   };
 
-  handleKeyUp = e => {
+  handleKeyUp = (e: KeyboardEvent) => {
     const char = this.getCharacter();
     if (char) {
       if (e.code === `Key${char.toUpperCase()}`) {
-        this.handleMouseUp();
+        this.handleMouseUp(e);
       }
     }
   };
 
-  propagateEvent(name, ...args) {
-    const propagate = this.props[name];
-    if (propagate) {
-      propagate(...args);
-    }
-  }
-
   getFrequency() {
-    const base = this.props.scaleStore.base;
-    const baseFreq = this.props.scaleStore.baseFreq;
-    const semitones = this.props.scaleStore.semitones;
+    const base = this.props.scaleStore.base.get();
+    const baseFreq = this.props.scaleStore.baseFreq.get();
+    const semitones = this.props.scaleStore.semitones.get();
     return baseFreq * Math.pow(2, (this.props.note - base) / semitones);
   }
 
   triggerAttack() {
-    this.playableStore.down = true;
-    SynthStore.pressed[this.props.note] = true;
-    SynthStore.pressed = SynthStore.pressed;
+    this.down.set(true);
+    synthStore.pressed.update(pressed => {
+      pressed[this.props.note] = true;
+      return pressed
+    })
     synth.triggerAttack(this.getFrequency());
   }
 
   triggerRelease() {
-    this.playableStore.down = false;
-    delete SynthStore.pressed[this.props.note];
-    SynthStore.pressed = SynthStore.pressed;
+    this.down.set(false);
+    synthStore.pressed.update(pressed => {
+      delete pressed[this.props.note];
+      return pressed
+    })
     synth.triggerRelease(this.getFrequency());
   }
 
-  handleMouseDown = e => {
-    this.propagateEvent("onMouseDown", e);
+  handleMouseDown = (e?: any) => {
     this.triggerAttack();
   };
 
-  handleMouseLeave = e => {
+  handleMouseLeave = (e?: any) => {
     this.handleMouseUp();
   };
 
-  handleMouseUp = e => {
-    this.propagateEvent("onMouseUp", e);
+  handleMouseUp = (e?: any) => {
     this.triggerRelease();
   };
 
