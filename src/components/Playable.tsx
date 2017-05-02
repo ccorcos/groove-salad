@@ -1,6 +1,7 @@
 import * as React from "react";
 import Tone from "tone";
-import { Component, Value } from "reactive-magic";
+import { Value } from "reactive-magic";
+import Component from "reactive-magic/component"
 import synthStore from "../stores/Synth";
 import ScaleStore from "../stores/Scale"
 

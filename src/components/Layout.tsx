@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Component } from "reactive-magic";
+import Component from "reactive-magic/component";
 import windowSize from "../stores/WindowSize";
 
 interface LayoutProps {

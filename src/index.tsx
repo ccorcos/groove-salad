@@ -2,7 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import R from "ramda";
 import { css } from "glamor";
-import { Component, Value, DerivedValue } from "reactive-magic";
+import { Value, DerivedValue } from "reactive-magic";
+import Component from "reactive-magic/component"
 import Pie from "./components/Pie";
 import Layout from "./components/Layout";
 import Keyboard from "./components/keyboard";

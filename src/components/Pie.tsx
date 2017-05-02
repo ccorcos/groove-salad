@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Component } from "reactive-magic";
+import Component from "reactive-magic/component";
 import Playable from "./playable";
-import Rotatable from "creative-ux/build/lib/components/Rotatable";
+import Rotatable from "creative-ux/components/Rotatable";
 import colorStore from "../stores/Color";
 import synthStore from "../stores/Synth";
-import { modPos, modMinus } from "creative-ux/build/lib/utils/mod-math";
+import { modPos, modMinus } from "creative-ux/utils/mod-math";
 import ScaleStore from "../stores/Scale"
 
 // padding of the outer ring for spinning
@@ -43,7 +43,7 @@ class Slice extends Component<SliceProps> {
       onMouseLeave,
       rotating,
       scaleStore
-    }: SliceProps
+    }
   ) {
     const i = offset;
 
