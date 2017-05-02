@@ -12,12 +12,11 @@ open http://localhost:8080/
 
 ## To Do
 
-- convert all to typescript
-- get everything working (Rotatable, etc)
-- stricter types on Component class
-- upgrade everything (reactive magic, example, creative ux, groove salad)
+- refactor onChange into reactive listeners
 - move playable to creative-ux
-- configure output structure
+- configure library output structure
+  - reactive-magic
+  - creative-ux
 - flyd and tone types
 
 
