@@ -12,13 +12,13 @@ open http://localhost:8080/
 
 ## To Do
 
+- number keys to select presets
 - persist presets to local storage
 - how to coordinate notes between scale presets?
 - press and hold to reset scale
 - hints (frequencies, letters, etc)
   - change the number of semitones
   - change the scale to a letter
-
 - synth effects
   - knob
   - reverb + other effects
