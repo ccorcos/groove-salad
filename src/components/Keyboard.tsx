@@ -141,10 +141,11 @@ export default class Keyboard extends Component<KeyboardProps> {
       <Draggable
         onSnap={this.onSnap}
         filterTarget={target => (target as Element).className !== "button"}
-        render={({onMouseDown, offset, dragging}) => (
+        render={({onMouseDown, onTouchStart, offset, dragging}) => (
           <div
             style={this.getKeyboardContainerStyle()}
             onMouseDown={onMouseDown}
+            onTouchStart={onTouchStart}
           >
             <div style={this.getKeyboardStyle({ dragging, offset })}>
               {this.viewButtons({ dragging })}

@@ -8,12 +8,16 @@ import Pie from "./components/Pie";
 import Layout from "./components/Layout";
 import Keyboard from "./components/keyboard";
 import ScaleStore from "./stores/Scale"
+import initReactFastclick from 'react-fastclick'
+
+initReactFastclick();
 
 css.global("html, body", {
   padding: 0,
   margin: 0,
   overflow: "hidden",
   position: "fixed",
+  WebkitTapHighlightColor: "transparent",
 });
 
 const noScrollbar = css({
