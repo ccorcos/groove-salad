@@ -18,9 +18,7 @@ function mergeStyles(a, b) {
 }
 
 interface SliceProps {
-  onMouseUp: any
   onMouseDown: any
-  onMouseLeave: any
   scaleStore: ScaleStore
   on: boolean
   pressed: boolean
@@ -38,9 +36,7 @@ class Slice extends Component<SliceProps> {
       pressed,
       offset,
       onClick,
-      onMouseUp,
       onMouseDown,
-      onMouseLeave,
       rotating,
       scaleStore
     }: SliceProps
@@ -76,9 +72,7 @@ class Slice extends Component<SliceProps> {
     return (
       <g
         onClick={onClick}
-        onMouseUp={onMouseUp}
         onMouseDown={onMouseDown}
-        onMouseLeave={onMouseLeave}
       >
         <path
           d={notePathData}
@@ -189,11 +183,9 @@ export default class Pie extends Component<PieProps> {
           scaleStore={scaleStore}
           key={note}
           note={note}
-          render={({ onMouseUp, onMouseDown, onMouseLeave }) => (
+          render={({ onMouseDown }) => (
             <Slice
-              onMouseUp={onMouseUp}
               onMouseDown={onMouseDown}
-              onMouseLeave={onMouseLeave}
               scaleStore={scaleStore}
               on={on}
               pressed={pressed}
@@ -220,12 +212,14 @@ export default class Pie extends Component<PieProps> {
         render={(
           {
             onMouseDown,
+            onTouchStart,
             rotation,
             rotating
           }
         ) => (
           <svg
             onMouseDown={onMouseDown}
+            onTouchStart={onTouchStart}
             style={this.getStyle({ rotation, rotating })}
             viewBox={`${o} ${o} ${l} ${l}`}
           >

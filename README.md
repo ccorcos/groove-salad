@@ -12,10 +12,10 @@ open http://localhost:8080/
 
 ## To Do
 
+- touch events
 - scale presets
   - preset button
   - persist stores to local stores
-- touch events
 - synth effects
   - knob
   - reverb + other effects

@@ -54,8 +54,6 @@ export type PlayEvent = React.MouseEvent<Element> | MouseEvent
 
 interface RenderProps {
   onMouseDown(e: PlayEvent): void
-  onMouseUp(e: PlayEvent): void
-  onMouseLeave(e: PlayEvent): void
 }
 
 interface PlayableProps {
@@ -175,7 +173,6 @@ export default class Playable extends Component<PlayableProps> {
   view({ render }) {
     return render({
       onMouseDown: this.handleMouseDown,
-      onMouseUp: this.handleMouseUp,
     });
   }
 }

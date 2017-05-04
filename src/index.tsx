@@ -12,7 +12,8 @@ import ScaleStore from "./stores/Scale"
 css.global("html, body", {
   padding: 0,
   margin: 0,
-  overflow: "hidden"
+  overflow: "hidden",
+  position: "fixed",
 });
 
 const noScrollbar = css({
