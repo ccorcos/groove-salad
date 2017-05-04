@@ -8,7 +8,7 @@ import Pie from "./components/Pie";
 import Layout from "./components/Layout";
 import Keyboard from "./components/keyboard";
 import ScaleStore from "./stores/Scale"
-import initReactFastclick from 'react-fastclick'
+import initReactFastclick from "react-fastclick"
 
 initReactFastclick();
 
@@ -41,6 +41,8 @@ export default class App extends Component<{}> {
 }
 
 const root = document.createElement("div");
+root.style.height = "100vh"
+root.style.width = "100vw"
 document.body.appendChild(root);
 
 ReactDOM.render(<App />, root);
