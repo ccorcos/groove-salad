@@ -50,10 +50,12 @@ const numberToLetter = n => {
 
 const keyboard = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
 
-export type PlayEvent = React.MouseEvent<Element> | MouseEvent
+export type PlayMouseEvent = React.MouseEvent<Element> | MouseEvent
+export type PlayTouchEvent = React.TouchEvent<Element> | TouchEvent
 
 interface RenderProps {
-  onMouseDown(e: PlayEvent): void
+  onMouseDown(e: PlayMouseEvent): void
+  onTouchStart(e: PlayTouchEvent): void
 }
 
 interface PlayableProps {
@@ -98,10 +100,12 @@ export default class Playable extends Component<PlayableProps> {
 
   startMouseListener = () => {
     window.addEventListener("mouseup", this.handleMouseUp);
+    window.addEventListener("touchend", this.handleTouchEnd);
   };
 
   stopMouseListener = () => {
     window.removeEventListener("mouseup", this.handleMouseUp);
+    window.removeEventListener("touchend", this.handleTouchEnd);
   };
 
   getCharacter() {
@@ -165,7 +169,17 @@ export default class Playable extends Component<PlayableProps> {
     this.startMouseListener()
   };
 
+  handleTouchStart = (e?: any) => {
+    this.triggerAttack();
+    this.startMouseListener()
+  };
+
   handleMouseUp = (e?: any) => {
+    this.triggerRelease();
+    this.stopMouseListener()
+  };
+
+  handleTouchEnd = (e?: any) => {
     this.triggerRelease();
     this.stopMouseListener()
   };
@@ -173,6 +187,7 @@ export default class Playable extends Component<PlayableProps> {
   view({ render }) {
     return render({
       onMouseDown: this.handleMouseDown,
+      onTouchStart: this.handleTouchStart,
     });
   }
 }

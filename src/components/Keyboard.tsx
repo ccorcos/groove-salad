@@ -123,12 +123,11 @@ export default class Keyboard extends Component<KeyboardProps> {
           key={offsetNote}
           nth={index - slide}
           note={offsetNote}
-          render={({ onMouseDown, onMouseUp, onMouseLeave }) => (
+          render={({ onMouseDown, onTouchStart }) => (
             <div
               className="button"
               onMouseDown={onMouseDown}
-              onMouseUp={onMouseUp}
-              onMouseLeave={onMouseLeave}
+              onTouchStart={onTouchStart}
               style={this.getKeyButtonStyle({ isRoot, dragging, pressed })}
             />
           )}
