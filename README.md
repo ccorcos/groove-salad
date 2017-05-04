@@ -17,11 +17,13 @@ open http://localhost:8080/
 - how to coordinate notes between scale presets?
 - press and hold to reset scale
 - hints (frequencies, letters, etc)
+  - refactor to use lingo like "mode" and "inversion", using Constraint
   - change the number of semitones
   - change the scale to a letter
 - synth effects
   - knob
   - reverb + other effects
+- display presets as pies!
 
 - design for different screen sizes
 
