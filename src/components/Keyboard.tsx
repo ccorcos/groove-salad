@@ -118,7 +118,7 @@ export default class Keyboard extends Component<KeyboardProps> {
       return (
         <Playable
           scaleStore={this.props.scaleStore}
-          key={offsetNote}
+          key={index}
           nth={index - slide}
           note={offsetNote}
           render={({ onMouseDown, onTouchStart }) => (

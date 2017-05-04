@@ -13,7 +13,6 @@ open http://localhost:8080/
 ## To Do
 
 - output midi
-- mobile performance
 
 
 - scale presets
