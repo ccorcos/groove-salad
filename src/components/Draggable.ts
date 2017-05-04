@@ -8,6 +8,7 @@ export type DragTouchEvent = React.TouchEvent<Element> | TouchEvent
 
 export class DragStore {
   down = new Value(false)
+  touchId = new Value(null)
   offset = new Value<Point>({ x: null, y: null })
   prev = new Value<Point>({ x: null, y: null })
   current = new Value<Point>({ x: null, y: null })
@@ -23,7 +24,8 @@ export class DragStore {
   }
 
   handleTouchStart = (e: DragTouchEvent) => {
-    const touch = e.touches[0]
+    const touch = e.changedTouches[0]
+    this.touchId.set(touch.identifier)
     this.handleDown({x: touch.pageX, y: touch.pageY})
   }
 
@@ -38,13 +40,25 @@ export class DragStore {
     }
   }
 
+  currentTouch = (e: DragTouchEvent) => {
+    const touches = e.changedTouches
+    for (let i = 0; i < touches.length; i++) {
+      const touch = touches[i]
+      if (touch.identifier === this.touchId.get()) {
+        return touch
+      }
+    }
+  }
+
   handleMouseMove = (e: DragMouseEvent) => {
     this.handleMove({x: e.pageX, y: e.pageY})
   }
 
   handleTouchMove = (e: DragTouchEvent) => {
-    const touch = e.touches[0]
-    this.handleMove({x: touch.pageX, y: touch.pageY})
+    const touch = this.currentTouch(e)
+    if (touch) {
+      this.handleMove({x: touch.pageX, y: touch.pageY})
+    }
   }
 
   handleUp = (p: Point) => {
@@ -60,7 +74,11 @@ export class DragStore {
   };
 
   handleTouchEnd = (e: DragTouchEvent) => {
-    this.handleUp({ x: null, y: null })
+    const touch = this.currentTouch(e)
+    if (touch) {
+      this.handleUp({ x: null, y: null })
+      this.touchId.set(null)
+    }
   };
 }
 

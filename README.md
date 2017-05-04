@@ -12,7 +12,6 @@ open http://localhost:8080/
 
 ## To Do
 
-- multitouch events
 - output midi
 - mobile performance
 

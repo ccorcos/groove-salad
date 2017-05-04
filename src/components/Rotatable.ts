@@ -9,6 +9,7 @@ export type RotateTouchEvent = React.TouchEvent<Element> | TouchEvent
 
 export class RotateStore {
   down = new Value(false)
+  touchId = new Value(null)
   offset = new Value(0)
   prev = new Value({ x: null, y: null })
   current = new Value({ x: null, y: null })
@@ -24,8 +25,19 @@ export class RotateStore {
   }
 
   handleTouchStart = (e: RotateTouchEvent) => {
-    const touch = e.touches[0]
+    const touch = e.changedTouches[0]
+    this.touchId.set(touch.identifier)
     this.handleDown({x: touch.pageX, y: touch.pageY})
+  }
+
+  currentTouch = (e: RotateTouchEvent) => {
+    const touches = e.changedTouches
+    for (let i = 0; i < touches.length; i++) {
+      const touch = touches[i]
+      if (touch.identifier === this.touchId.get()) {
+        return touch
+      }
+    }
   }
 
   handleMove = (rect: ClientRect, p: Point) => {
@@ -46,8 +58,10 @@ export class RotateStore {
   }
 
   handleTouchMove = (rect: ClientRect, e: RotateTouchEvent) => {
-    const touch = e.touches[0]
-    this.handleMove(rect, {x: touch.pageX, y: touch.pageY})
+    const touch = this.currentTouch(e)
+    if (touch) {
+      this.handleMove(rect, {x: touch.pageX, y: touch.pageY})
+    }
   }
 
   handleUp = (p: Point) => {
@@ -63,7 +77,11 @@ export class RotateStore {
   }
 
   handleTouchEnd = (e: RotateTouchEvent) => {
-    this.handleUp({ x: null, y: null })
+    const touch = this.currentTouch(e)
+    if (touch) {
+      this.handleUp({ x: null, y: null })
+      this.touchId.set(null)
+    }
   }
 }
 

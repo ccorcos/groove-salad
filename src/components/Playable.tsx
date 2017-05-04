@@ -69,6 +69,7 @@ interface PlayableProps {
 export default class Playable extends Component<PlayableProps> {
 
   down = new Value(false)
+  touchId = new Value(null)
 
   willMount() {
     this.startKeyboardListener();
@@ -84,6 +85,7 @@ export default class Playable extends Component<PlayableProps> {
     if (this.down.get()) {
       if (this.props.note !== props.note || this.props.nth !== props.nth) {
         this.triggerRelease();
+        this.touchId.set(null)
       }
     }
   }
@@ -169,7 +171,19 @@ export default class Playable extends Component<PlayableProps> {
     this.startMouseListener()
   };
 
-  handleTouchStart = (e?: any) => {
+  currentTouch = (e: PlayTouchEvent) => {
+    const touches = e.changedTouches
+    for (let i = 0; i < touches.length; i++) {
+      const touch = touches[i]
+      if (touch.identifier === this.touchId.get()) {
+        return touch
+      }
+    }
+  }
+
+  handleTouchStart = (e: PlayTouchEvent) => {
+    const touch = e.changedTouches[0]
+    this.touchId.set(touch.identifier)
     this.triggerAttack();
     this.startMouseListener()
   };
@@ -179,9 +193,13 @@ export default class Playable extends Component<PlayableProps> {
     this.stopMouseListener()
   };
 
-  handleTouchEnd = (e?: any) => {
-    this.triggerRelease();
-    this.stopMouseListener()
+  handleTouchEnd = (e: TouchEvent) => {
+    const touch = this.currentTouch(e)
+    if (touch) {
+      this.touchId.set(null)
+      this.triggerRelease()
+      this.stopMouseListener()
+    }
   };
 
   view({ render }) {
