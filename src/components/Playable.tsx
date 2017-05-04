@@ -81,8 +81,10 @@ export default class Playable extends Component<PlayableProps> {
   }
 
   willUpdate(props) {
-    if (this.props.note !== props.note) {
-      this.triggerRelease();
+    if (this.down.get()) {
+      if (this.props.note !== props.note || this.props.nth !== props.nth) {
+        this.triggerRelease();
+      }
     }
   }
 
