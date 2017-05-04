@@ -31,6 +31,8 @@ export class SizeStore {
   keyboardWidth = new DerivedValue(() =>
     this.keyboardButtonSize.get() * this.keyboardViewableButtons.get()
   )
+
+  presetButtonDiameter = new Value(48)
 }
 
 const sizeStore = new SizeStore();

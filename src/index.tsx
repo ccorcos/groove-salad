@@ -7,7 +7,7 @@ import Component from "reactive-magic/component"
 import Pie from "./components/Pie";
 import Layout from "./components/Layout";
 import Keyboard from "./components/keyboard";
-import ScaleStore from "./stores/Scale"
+import appStore from "./stores/App"
 import initReactFastclick from "react-fastclick"
 import Promise from 'promise-polyfill'
 import 'whatwg-fetch'
@@ -37,15 +37,14 @@ const noScrollbar = css({
   }
 });
 
-const scaleStore = new ScaleStore()
-window["scaleStore"] = scaleStore;
-
 export default class App extends Component<{}> {
   view() {
+    const scaleStore = appStore.getCurrentScale()
+    const whichScale = appStore.scaleIndex.get()
     return (
       <Layout
-        circle={<Pie scaleStore={scaleStore} />}
-        keyboard={<Keyboard scaleStore={scaleStore} />}
+        circle={<Pie key={whichScale} scaleStore={scaleStore} />}
+        keyboard={<Keyboard key={whichScale} scaleStore={scaleStore} />}
       />
     );
   }

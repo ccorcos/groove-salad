@@ -12,17 +12,18 @@ open http://localhost:8080/
 
 ## To Do
 
-- scale presets
-  - preset button
-  - persist stores to local stores
+- persist presets to local storage
+- how to coordinate notes between scale presets?
+- press and hold to reset scale
+- hints (frequencies, letters, etc)
+  - change the number of semitones
+  - change the scale to a letter
 
 - synth effects
   - knob
   - reverb + other effects
 
 - design for different screen sizes
-
-- hints (frequencies, letters, etc)
 
 - rename to "Groove Salad" + favicon
 - Demo video

@@ -1,6 +1,7 @@
 import * as React from "react";
 import Component from "reactive-magic/component";
 import WindowSize from "../stores/WindowSize"
+import Presets from "./Presets"
 
 interface LayoutProps {
   circle: JSX.Element
@@ -38,6 +39,7 @@ export default class Layout extends Component<LayoutProps> {
     return (
       <div style={this.getStyle()}>
         <div style={{ padding: 8 }}>
+          <Presets/>
           {props.circle}
         </div>
         {props.keyboard}
