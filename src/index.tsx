@@ -9,8 +9,19 @@ import Layout from "./components/Layout";
 import Keyboard from "./components/keyboard";
 import ScaleStore from "./stores/Scale"
 import initReactFastclick from "react-fastclick"
+import Promise from 'promise-polyfill'
+import 'whatwg-fetch'
+import Tone from "tone"
+import StartAudioContext from "startaudiocontext"
+
+StartAudioContext(Tone.context, 'body')
 
 initReactFastclick();
+
+// To add to window
+if (!window["Promise"]) {
+  window["Promise"] = Promise;
+}
 
 css.global("html, body", {
   padding: 0,

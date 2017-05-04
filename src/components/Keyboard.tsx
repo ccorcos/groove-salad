@@ -7,6 +7,7 @@ import { modPos } from "../utils/mod-math";
 import Draggable from "./Draggable";
 import synthStore from "../stores/Synth";
 import ScaleStore from "../stores/Scale"
+import SizeStore from "../stores/Size"
 
 function repeat(list, n) {
   let acc = [];
@@ -15,11 +16,6 @@ function repeat(list, n) {
   }
   return acc;
 }
-
-const buttonWidth = 48;
-const buttonMargin = 8;
-const buttonSize = buttonWidth + 2 * buttonMargin;
-const width = buttonWidth * 6 + buttonMargin * 6 * 2;
 
 export interface KeyboardProps {
   scaleStore: ScaleStore
@@ -35,7 +31,7 @@ export default class Keyboard extends Component<KeyboardProps> {
       display: "flex",
       margin: 8,
       overflow: "hidden",
-      width: width,
+      width: SizeStore.keyboardWidth.get(),
       border: `1px solid black`,
       borderRadius: 4,
       borderColor: hexToRgba(colorStore.primary.get(), 0.2),
@@ -46,11 +42,11 @@ export default class Keyboard extends Component<KeyboardProps> {
   getKeyboardStyle({ dragging, offset }): React.CSSProperties {
     const rootNoteIndex = this.props.scaleStore.rootNoteIndex.get()
     return {
-      height: 200,
+      height: SizeStore.keyboardHeight.get(),
       flex: 1,
       display: "flex",
       alignItems: "center",
-      transform: `translateX(${offset.x - rootNoteIndex * buttonSize}px)`,
+      transform: `translateX(${offset.x - rootNoteIndex * SizeStore.keyboardButtonSize.get()}px)`,
       transition: !dragging ? "transform ease-in-out 0.5s" : undefined
     };
   }
@@ -60,9 +56,9 @@ export default class Keyboard extends Component<KeyboardProps> {
     const accentColor = colorStore.accent.get()
     return {
       flexShrink: 0,
-      height: 80,
-      width: buttonWidth,
-      margin: buttonMargin,
+      height: SizeStore.keyboardButtonHeight.get(),
+      width: SizeStore.keyboardButtonWidth.get(),
+      margin: SizeStore.keyboardButtonMargin.get(),
       borderRadius: 4,
       backgroundColor: isRoot ? accentColor : primaryColor,
       opacity: pressed ? 1 : 0.2,
@@ -92,6 +88,8 @@ export default class Keyboard extends Component<KeyboardProps> {
     if (notesPerOctave === 0) {
       return { y: offset.y, x: 0 };
     }
+    const width = SizeStore.keyboardWidth.get()
+    const buttonSize = SizeStore.keyboardButtonSize.get()
     const inversionOffset = Math.round(offset.x / buttonSize);
     this.noteOffset.set(inversionOffset);
     const min = width - (totalNotes - rootNoteIndex) * buttonSize;

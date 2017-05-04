@@ -12,7 +12,11 @@ open http://localhost:8080/
 
 ## To Do
 
-- touch events
+- multitouch events
+- output midi
+- mobile performance
+
+
 - scale presets
   - preset button
   - persist stores to local stores

@@ -6,6 +6,7 @@ import colorStore from "../stores/Color";
 import synthStore from "../stores/Synth";
 import { modPos, modMinus } from "../utils/mod-math";
 import ScaleStore from "../stores/Scale"
+import SizeStore from "../stores/Size"
 
 // padding of the outer ring for spinning
 const padding = 0.4;
@@ -115,7 +116,7 @@ export default class Pie extends Component<PieProps> {
   getStyle({ rotation, rotating }): React.CSSProperties {
     const semitonesPerOctave = this.props.scaleStore.semitonesPerOctave.get();
     return {
-      height: 250,
+      height: SizeStore.pieDiameter.get(),
       // align 0 at the top, and then rotate
       transform: `rotate(${-90 - 360 / semitonesPerOctave / 2}deg) rotate(${rotation}rad)`,
       transformOrigin: "50% 50%",
