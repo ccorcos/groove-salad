@@ -115,10 +115,11 @@ export default class Pie extends Component<PieProps> {
 
   getStyle({ rotation, rotating }): React.CSSProperties {
     const semitonesPerOctave = this.props.scaleStore.semitonesPerOctave.get();
+    const baseRotation = this.props.scaleStore.getPieRotation()
     return {
       height: SizeStore.pieDiameter.get(),
       // align 0 at the top, and then rotate
-      transform: `rotate(${-90 - 360 / semitonesPerOctave / 2}deg) rotate(${rotation}rad)`,
+      transform: `rotate(${-90 - 360 / semitonesPerOctave / 2}deg) rotate(${-baseRotation + rotation}rad)`,
       transformOrigin: "50% 50%",
       // animate snaps
       transition: !rotating ? "transform ease-in-out 0.5s" : undefined
@@ -179,7 +180,6 @@ export default class Pie extends Component<PieProps> {
       <Rotatable
         filterTarget={target => (target as Element).tagName !== "path"}
         onSnap={this.onSnap}
-        onChange={this.onSnap}
         render={(
           {
             onMouseDown,

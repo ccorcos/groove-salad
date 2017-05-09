@@ -142,7 +142,7 @@ export default class Playable extends Component<PlayableProps> {
   };
 
   getFrequency() {
-    this.props.scaleStore.getFrequency(this.props.note)
+    return this.props.scaleStore.getFrequency(this.props.note)
   }
 
   triggerAttack() {

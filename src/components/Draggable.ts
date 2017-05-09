@@ -91,7 +91,6 @@ export interface RenderProps {
 
 export interface Props {
   render: (p: RenderProps) => JSX.Element
-  onChange?: (n: Point) => void
   onSnap?: (n: Point) => Point
   filterTarget?: (t: EventTarget) => boolean
   dragStore?: DragStore
@@ -146,8 +145,8 @@ export default class Draggable extends Component<Props> {
   handleMouseMove = (e: MouseEvent) => {
     if (this.dragStore.down.get()) {
       this.dragStore.handleMouseMove(e)
-      if (this.props.onChange) {
-        this.props.onChange(this.dragStore.offset.get())
+      if (this.props.onSnap) {
+        this.dragStore.offset.update(this.props.onSnap)
       }
     }
   };
@@ -155,8 +154,8 @@ export default class Draggable extends Component<Props> {
   handleTouchMove = (e: TouchEvent) => {
     if (this.dragStore.down.get()) {
       this.dragStore.handleTouchMove(e)
-      if (this.props.onChange) {
-        this.props.onChange(this.dragStore.offset.get())
+      if (this.props.onSnap) {
+        this.dragStore.offset.update(this.props.onSnap)
       }
     }
   };
@@ -167,6 +166,7 @@ export default class Draggable extends Component<Props> {
       if (this.props.onSnap) {
         this.dragStore.offset.update(this.props.onSnap)
       }
+      this.dragStore.offset.set({x: 0, y: 0})
     }
     this.stopWindowListeners()
   };
@@ -177,6 +177,7 @@ export default class Draggable extends Component<Props> {
       if (this.props.onSnap) {
         this.dragStore.offset.update(this.props.onSnap)
       }
+      this.dragStore.offset.set({x: 0, y: 0})
     }
     this.stopWindowListeners()
   };

@@ -94,7 +94,6 @@ export interface RenderProps {
 
 export interface Props {
   render: (p: RenderProps) => JSX.Element
-  onChange?: (n: number) => void
   onSnap?: (n: number) => number
   filterTarget?: (t: EventTarget) => boolean
   rotateStore?: RotateStore
@@ -152,8 +151,8 @@ export default class Rotatable extends Component<Props> {
   handleMouseMove = (e: MouseEvent) => {
     this.rotateStore.handleMouseMove(this.rect, e);
     if (this.rotateStore.down.get()) {
-      if (this.props.onChange) {
-        this.props.onChange(this.rotateStore.offset.get())
+      if (this.props.onSnap) {
+        this.rotateStore.offset.update(this.props.onSnap);
       }
     }
   };
@@ -161,8 +160,8 @@ export default class Rotatable extends Component<Props> {
   handleTouchMove = (e: TouchEvent) => {
     this.rotateStore.handleTouchMove(this.rect, e);
     if (this.rotateStore.down.get()) {
-      if (this.props.onChange) {
-        this.props.onChange(this.rotateStore.offset.get())
+      if (this.props.onSnap) {
+        this.rotateStore.offset.update(this.props.onSnap);
       }
     }
   };
@@ -173,6 +172,7 @@ export default class Rotatable extends Component<Props> {
       if (this.props.onSnap) {
         this.rotateStore.offset.update(this.props.onSnap);
       }
+      this.rotateStore.offset.set(0)
     }
     this.stopWindowListeners()
   };
@@ -183,6 +183,7 @@ export default class Rotatable extends Component<Props> {
       if (this.props.onSnap) {
         this.rotateStore.offset.update(this.props.onSnap);
       }
+      this.rotateStore.offset.set(0)
     }
     this.stopWindowListeners()
   };

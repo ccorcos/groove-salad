@@ -12,7 +12,8 @@ open http://localhost:8080/
 
 ## To Do
 
-- use mode and inversion scale with constraint
+- fix everything again
+  - remember that a negative angle is a positive mode
 
 - persist presets to local storage
 - how to coordinate notes between scale presets?

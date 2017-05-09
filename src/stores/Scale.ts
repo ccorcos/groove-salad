@@ -94,7 +94,6 @@ export default class ScaleStore {
     if (notesPerOctave === 0) {
       return offset
     }
-
     const inversionOffset = Math.round(offset)
     const inversionTotal = inversionOffset + this.inversion.get()
     const inversionPerOctave = inversionTotal / notesPerOctave
