@@ -59,7 +59,7 @@ export default class ScalePresets extends Component<{}> {
           key={i}
           active={i === activeIndex}
           onClick={() => {
-            appStore.scaleIndex.set(i)
+            appStore.selectScale(i)
           }}
         >
           {i}

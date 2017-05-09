@@ -12,7 +12,7 @@ open http://localhost:8080/
 
 ## To Do
 
-- number keys to select presets
+- use mode and inversion scale with constraint
 - persist presets to local storage
 - how to coordinate notes between scale presets?
 - press and hold to reset scale
