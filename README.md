@@ -12,15 +12,14 @@ open http://localhost:8080/
 
 ## To Do
 
+- synth effects
+  - knob
+  - reverb + other effects
 - hints
   - letters with octaves
 - controls
   - change the number of semitones
   - change the scale to a letter
-- synth effects
-  - knob
-  - reverb + other effects
-- display presets as pies!
 - persist presets to local storage
 - press and hold to reset scale
 
