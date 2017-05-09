@@ -142,10 +142,7 @@ export default class Playable extends Component<PlayableProps> {
   };
 
   getFrequency() {
-    const base = this.props.scaleStore.baseSemitone.get();
-    const baseFreq = this.props.scaleStore.baseSemitoneFreq.get();
-    const semitones = this.props.scaleStore.semitonesPerOctave.get();
-    return baseFreq * Math.pow(2, (this.props.note - base) / semitones);
+    this.props.scaleStore.getFrequency(this.props.note)
   }
 
   triggerAttack() {

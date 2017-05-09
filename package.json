@@ -26,6 +26,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "@types/ramda": "0.0.9",
     "@types/react": "^15.0.13",
     "@types/react-dom": "^0.14.23",
     "babel-core": "^6.24.0",

@@ -81,7 +81,7 @@ class Slice extends Component<SliceProps> {
         <path
           d={notePathData}
           fill={
-            i === modPos(scaleStore.semitoneOffset.get(), semitonesPerOctave)
+            i === modPos(scaleStore.rootSemitone.get(), semitonesPerOctave)
               ? accentColor
               : primaryColor
           }
@@ -130,38 +130,7 @@ export default class Pie extends Component<PieProps> {
   // REMEMBER: +offset is -angle
   onSnap = angle => {
     const { scaleStore } = this.props;
-    const semitonesPerOctave = scaleStore.semitonesPerOctave.get();
-    // We know the arclength of each piece of pie
-    const arc = 2 * Math.PI / semitonesPerOctave;
-    // A +offset is a -angle, so we can find the normalized angle
-    const normA = angle + scaleStore.semitoneOffset.get() * arc;
-    // To find the closest not, we need to do some modular math. The distance of normA to the note of interest will be computed to the range of [-pi, +pi] so we can compare distances and add this distance to the angle to get the place to snap to
-    let distance = 99;
-    // Closest note should start at the previous offset index. modPos will take the offset and return something in the range of [0, 11]
-    let closest = modPos(scaleStore.semitoneOffset.get(), semitonesPerOctave);
-    scaleStore.notes.get().forEach((on, i) => {
-      if (on) {
-        // Normalize i by the offset, so an offset of 3 at and index of 3 is a normI of 0 and an offset of 3 at an index of 1 is 10.
-        const normI = modPos(
-          modMinus(i, scaleStore.semitoneOffset.get(), semitonesPerOctave),
-          semitonesPerOctave
-        );
-        // Compute the distance to a note
-        const dist = modMinus(normA, -normI * arc, 2 * Math.PI);
-        if (Math.abs(dist) < Math.abs(distance)) {
-          distance = dist;
-          closest = i;
-        }
-      }
-    });
-    // If we don't have any notes on, then nap back to the previous offset
-    if (distance === 99) {
-      return -scaleStore.semitoneOffset.get() * arc;
-    }
-    // Add the distance to the closest note to the angle, and then divide by the arc length to get the offset. We'll round due to floating point precision
-    scaleStore.semitoneOffset.set(Math.round((-angle + distance) / arc))
-    // Snap to the offset!
-    return -scaleStore.semitoneOffset.get() * arc;
+    return scaleStore.snapPieRotation(angle)
   };
 
   viewSlices({ scaleStore, rotating }: { scaleStore: ScaleStore, rotating: boolean}) {
@@ -171,10 +140,7 @@ export default class Pie extends Component<PieProps> {
     const arc = 1 / semitonesPerOctave;
     const noteArc = arc - spaceArc;
     return notes.map((on, i) => {
-      // the circle spins so we need to offset the note index as well.
-      const noteIndex = modPos(i - scaleStore.semitoneOffset.get(), semitonesPerOctave);
-      const note = noteIndex + scaleStore.baseSemitone.get() + scaleStore.semitoneOffset.get();
-
+      const note = scaleStore.rootSemitone.get() + i
       let pressed = false;
       const keys = Object.keys(synthStore.pressed.get())
       keys.forEach(pressedNote => {
@@ -185,7 +151,7 @@ export default class Pie extends Component<PieProps> {
       return (
         <Playable
           scaleStore={scaleStore}
-          key={note}
+          key={i}
           note={note}
           render={({ onMouseDown, onTouchStart }) => (
             <Slice

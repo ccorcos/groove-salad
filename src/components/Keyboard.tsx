@@ -40,7 +40,7 @@ export default class Keyboard extends Component<KeyboardProps> {
   }
 
   getKeyboardStyle({ dragging, offset }): React.CSSProperties {
-    const rootNoteIndex = this.props.scaleStore.rootNoteIndex.get()
+    const rootNoteIndex = this.props.scaleStore.rootIndex.get()
     return {
       height: SizeStore.keyboardHeight.get(),
       flex: 1,
@@ -82,29 +82,17 @@ export default class Keyboard extends Component<KeyboardProps> {
     if (offset.x === null) {
       return offset;
     }
-    const notesPerOctave = this.props.scaleStore.notesPerOctave.get()
-    const rootNoteIndex = this.props.scaleStore.rootNoteIndex.get()
-    const totalNotes = this.props.scaleStore.totalNotes.get()
-    if (notesPerOctave === 0) {
-      return { y: offset.y, x: 0 };
-    }
-    const width = SizeStore.keyboardWidth.get()
     const buttonSize = SizeStore.keyboardButtonSize.get()
-    const inversionOffset = Math.round(offset.x / buttonSize);
-    this.noteOffset.set(inversionOffset);
-    const min = width - (totalNotes - rootNoteIndex) * buttonSize;
-    const max = rootNoteIndex * buttonSize;
-    const snap = inversionOffset * buttonSize;
-    return { y: offset.y, x: Math.max(min, Math.min(max, snap)) };
+    return { y: offset.y, x: this.props.scaleStore.snapKeyboardInversion(offset.x / buttonSize) };
   };
 
   viewButtons({ dragging }) {
-    const notesPerOctave = this.props.scaleStore.notesPerOctave.get()
+    const notesPerOctave = this.props.scaleStore.playableNotesPerOctave.get()
     const semitonesPerOctave = this.props.scaleStore.semitonesPerOctave.get()
-    const semitoneOffset = this.props.scaleStore.semitoneOffset.get()
+    const semitoneOffset = this.props.scaleStore.rootSemitone.get()
     const playableNotes = this.props.scaleStore.playableNotes.get()
-    const rootOctave = this.props.scaleStore.rootOctave.get()
-    const rootNoteOffset = this.props.scaleStore.rootNoteOffset.get()
+    const rootOctave = this.props.scaleStore.octave.get()
+    const rootNoteOffset = this.props.scaleStore.rootIndex.get()
     const noteOffset = this.noteOffset.get()
 
     const pressedNotes = synthStore.pressed.get();
