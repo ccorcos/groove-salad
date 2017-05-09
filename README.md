@@ -12,18 +12,18 @@ open http://localhost:8080/
 
 ## To Do
 
-- use mode and inversion scale with constraint
-- persist presets to local storage
-- how to coordinate notes between scale presets?
-- press and hold to reset scale
-- hints (frequencies, letters, etc)
-  - refactor to use lingo like "mode" and "inversion", using Constraint
+- hints
+  - letters with octaves
+- controls
   - change the number of semitones
   - change the scale to a letter
 - synth effects
   - knob
   - reverb + other effects
 - display presets as pies!
+- persist presets to local storage
+- press and hold to reset scale
+
 
 - design for different screen sizes
 
