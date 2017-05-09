@@ -12,16 +12,16 @@ open http://localhost:8080/
 
 ## To Do
 
+- persist presets to local storage
+- press and hold to reset scale
 - synth effects
   - knob
   - reverb + other effects
-- hints
-  - letters with octaves
 - controls
   - change the number of semitones
   - change the scale to a letter
-- persist presets to local storage
-- press and hold to reset scale
+- hints
+  - letters with octaves
 
 
 - design for different screen sizes
