@@ -1,11 +1,3 @@
-# Groove Salad
+# Groove Salad [[Demo](https://ccorcos.github.io/groove-salad/)]
 
-## Getting Started
-
-```sh
-git clone git@github.com:ccorcos/groove-salad.git
-cd groove
-npm install
-start
-open http://localhost:8080/
-```
+An instrument that tries to represent the way we actually think about music.
