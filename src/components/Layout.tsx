@@ -39,7 +39,6 @@ export default class Layout extends Component<LayoutProps> {
     return (
       <div style={this.getStyle()}>
         <div style={{ padding: 8 }}>
-          <Presets/>
           {props.circle}
         </div>
         {props.keyboard}
