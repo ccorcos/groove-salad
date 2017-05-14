@@ -20,7 +20,7 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-fastclick": "^3.0.1",
-    "reactive-magic": "^0.5.0",
+    "reactive-magic": "^1.5.0",
     "startaudiocontext": "^1.2.0",
     "tone": "^0.10.0",
     "whatwg-fetch": "^2.0.3"
