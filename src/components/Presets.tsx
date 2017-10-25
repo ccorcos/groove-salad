@@ -1,9 +1,9 @@
 import * as React from "react"
 import Component from "reactive-magic/component"
 import PresetButton from "./PresetButton"
-import scales from "./scales"
-import scaleIndex from "./scaleIndex"
-import selectScale from "./selectScale"
+import scales from "../stores/scales"
+import scaleIndex from "../stores/scaleIndex"
+import selectScale from "../stores/selectScale"
 
 export default class ScalePresets extends Component<{}> {
 	getStyle(): React.CSSProperties {

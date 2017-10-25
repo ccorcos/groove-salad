@@ -6,8 +6,8 @@ import Promise from "promise-polyfill"
 import "whatwg-fetch"
 import Tone from "tone"
 import StartAudioContext from "startaudiocontext"
-import selectScaleFromKeyPress from "./selectScaleFromKeyPress"
-import App from "./App"
+import selectScaleFromKeyPress from "./stores/selectScaleFromKeyPress"
+import App from "./components/App"
 
 StartAudioContext(Tone.context, "body")
 

@@ -1,7 +1,7 @@
 import Component from "reactive-magic/component"
-import { DragMouseEvent } from "./DragMouseEvent"
-import { DragTouchEvent } from "./DragTouchEvent"
-import RotateStore from "./RotateStore"
+import { DragMouseEvent } from "../types/DragMouseEvent"
+import { DragTouchEvent } from "../types/DragTouchEvent"
+import RotateStore from "../stores/RotateStore"
 
 interface RenderProps {
 	onMouseDown: (e: DragMouseEvent) => void

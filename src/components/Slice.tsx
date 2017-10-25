@@ -1,9 +1,9 @@
 import * as React from "react"
 import Component from "reactive-magic/component"
-import modPos from "./modPos"
-import ScaleStore from "./Scale"
-import primary from "./primary"
-import accent from "./accent"
+import modPos from "../helpers/modPos"
+import ScaleStore from "../stores/Scale"
+import primary from "../colors/primary"
+import accent from "../colors/accent"
 
 interface SliceProps {
 	onMouseDown: any

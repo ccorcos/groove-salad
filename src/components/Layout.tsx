@@ -1,6 +1,6 @@
 import * as React from "react"
 import Component from "reactive-magic/component"
-import WindowSize from "./WindowSize"
+import WindowSize from "../stores/WindowSize"
 
 interface LayoutProps {
 	circle: JSX.Element

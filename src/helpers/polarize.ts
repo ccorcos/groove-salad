@@ -1,5 +1,5 @@
-import { Point } from "./Point"
-import { PolarPoint } from "./PolarPoint"
+import { Point } from "../types/Point"
+import { PolarPoint } from "../types/PolarPoint"
 
 // Find the polar coordinates of the point within the rect
 export default function polarize(point: Point, rect: ClientRect): PolarPoint {

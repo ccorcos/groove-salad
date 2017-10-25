@@ -1,16 +1,14 @@
 import { Value } from "reactive-magic"
-import modMinus from "./modMinus"
-import { Point } from "./Point"
-import polarize from "./polarize"
-import { DragMouseEvent } from "./DragMouseEvent"
-import { DragTouchEvent } from "./DragTouchEvent"
+import { Point } from "../types/Point"
+import { DragMouseEvent } from "../types/DragMouseEvent"
+import { DragTouchEvent } from "../types/DragTouchEvent"
 
-export default class RotateStore {
+export default class DragStore {
 	down = new Value(false)
 	touchId = new Value(null)
-	offset = new Value(0)
-	prev = new Value({ x: null, y: null })
-	current = new Value({ x: null, y: null })
+	offset = new Value<Point>({ x: null, y: null })
+	prev = new Value<Point>({ x: null, y: null })
+	current = new Value<Point>({ x: null, y: null })
 
 	handleDown = (p: Point) => {
 		this.down.set(true)
@@ -28,6 +26,17 @@ export default class RotateStore {
 		this.handleDown({ x: touch.pageX, y: touch.pageY })
 	}
 
+	handleMove = (p: Point) => {
+		if (this.down.get()) {
+			this.prev.set(this.current.get())
+			this.current.set(p)
+			this.offset.update(({ x, y }) => ({
+				x: x + this.current.get().x - this.prev.get().x,
+				y: y + this.current.get().y - this.prev.get().y,
+			}))
+		}
+	}
+
 	currentTouch = (e: DragTouchEvent) => {
 		const touches = e.changedTouches
 		for (let i = 0; i < touches.length; i++) {
@@ -38,27 +47,14 @@ export default class RotateStore {
 		}
 	}
 
-	handleMove = (rect: ClientRect, p: Point) => {
-		if (this.down.get()) {
-			this.prev.set(this.current.get())
-			this.current.set(p)
-
-			// get the rect and offset by an angle
-			const p1 = polarize(this.prev.get(), rect)
-			const p2 = polarize(this.current.get(), rect)
-			const da = modMinus(p2.a, p1.a, 2 * Math.PI)
-			this.offset.update(offset => offset + da)
-		}
+	handleMouseMove = (e: DragMouseEvent) => {
+		this.handleMove({ x: e.pageX, y: e.pageY })
 	}
 
-	handleMouseMove = (rect: ClientRect, e: DragMouseEvent) => {
-		this.handleMove(rect, { x: e.pageX, y: e.pageY })
-	}
-
-	handleTouchMove = (rect: ClientRect, e: DragTouchEvent) => {
+	handleTouchMove = (e: DragTouchEvent) => {
 		const touch = this.currentTouch(e)
 		if (touch) {
-			this.handleMove(rect, { x: touch.pageX, y: touch.pageY })
+			this.handleMove({ x: touch.pageX, y: touch.pageY })
 		}
 	}
 

@@ -1,8 +1,8 @@
 import * as React from "react"
 import Component from "reactive-magic/component"
-import primary from "./primary"
-import background from "./background"
-import SizeStore from "./Size"
+import primary from "../colors/primary"
+import background from "../colors/background"
+import SizeStore from "../stores/Size"
 
 interface PresetButtonProps {
 	onClick?: (e: any) => void

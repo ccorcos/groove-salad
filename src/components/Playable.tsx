@@ -1,10 +1,10 @@
 import { Value } from "reactive-magic"
 import Component from "reactive-magic/component"
-import pressedNotes from "./pressedNotes"
-import ScaleStore from "./Scale"
-import synth from "./noise"
-import { DragMouseEvent } from "./DragMouseEvent"
-import { DragTouchEvent } from "./DragTouchEvent"
+import pressedNotes from "../stores/pressedNotes"
+import ScaleStore from "../stores/Scale"
+import synth from "../helpers/noise"
+import { DragMouseEvent } from "../types/DragMouseEvent"
+import { DragTouchEvent } from "../types/DragTouchEvent"
 
 const keyboard = ["a", "s", "d", "f", "g", "h", "j", "k", "l"]
 
