@@ -2,12 +2,14 @@ import * as React from "react"
 import { Value } from "reactive-magic"
 import Component from "reactive-magic/component"
 import Playable from "./playable"
-import colorStore, { hexToRgba } from "./Color"
-import { modPos } from "./mod-math"
+import modPos from "./modPos"
 import Draggable from "./Draggable"
-import synthStore from "./Synth"
+import pressedNotesStore from "./pressedNotes"
 import ScaleStore from "./Scale"
 import SizeStore from "./Size"
+import hexToRgba from "./hexToRgba"
+import primary from "./primary"
+import accent from "./accent"
 
 function repeat(list, n) {
 	let acc = []
@@ -17,7 +19,7 @@ function repeat(list, n) {
 	return acc
 }
 
-export interface KeyboardProps {
+interface KeyboardProps {
 	scaleStore: ScaleStore
 }
 
@@ -33,7 +35,7 @@ export default class Keyboard extends Component<KeyboardProps> {
 			width: SizeStore.keyboardWidth.get(),
 			border: `1px solid black`,
 			borderRadius: 4,
-			borderColor: hexToRgba(colorStore.primary.get(), 0.2),
+			borderColor: hexToRgba(primary.get(), 0.2),
 			cursor: "ew-resize",
 		}
 	}
@@ -52,8 +54,8 @@ export default class Keyboard extends Component<KeyboardProps> {
 	}
 
 	getKeyButtonStyle({ isRoot, dragging, pressed }): React.CSSProperties {
-		const primaryColor = colorStore.primary.get()
-		const accentColor = colorStore.accent.get()
+		const primaryColor = primary.get()
+		const accentColor = accent.get()
 		return {
 			flexShrink: 0,
 			height: SizeStore.keyboardButtonHeight.get(),
@@ -104,7 +106,7 @@ export default class Keyboard extends Component<KeyboardProps> {
 		const rootNoteOffset = this.props.scaleStore.rootNoteOffset.get()
 		const noteOffset = this.noteOffset.get()
 
-		const pressedNotes = synthStore.pressed.get()
+		const pressedNotes = pressedNotesStore.get()
 		return repeat(playableNotes, 8).map((note, index) => {
 			const isRoot =
 				modPos(note, semitonesPerOctave) ===

@@ -1,61 +1,16 @@
-import * as React from "react"
-import Tone from "tone"
 import { Value } from "reactive-magic"
 import Component from "reactive-magic/component"
-import synthStore from "./Synth"
+import pressedNotes from "./pressedNotes"
 import ScaleStore from "./Scale"
-
-const freeverb = new Tone.Freeverb({
-	roomSize: 0.5,
-	dampening: 30000,
-}).toMaster()
-
-// window.addEventListener("mousemove", e => {
-//   freeverb.set("roomSize", e.pageX / window.innerWidth)
-// })
-
-var filter = new Tone.Filter({
-	type: "lowpass",
-	frequency: 250,
-	rolloff: -12, // -12, -24, -48 or -96
-	Q: 1,
-	gain: 0,
-}).connect(freeverb)
-
-var synth = new Tone.PolySynth({
-	polyphony: 4,
-	// volume:0,
-	// detune:0,
-	voice: Tone.MonoSynth,
-}).connect(filter)
-
-const numberToLetter = n => {
-	const letter = [
-		"C",
-		"D#",
-		"D",
-		"D#",
-		"E",
-		"F",
-		"F#",
-		"G",
-		"G#",
-		"A",
-		"A#",
-		"B",
-	][n % 12]
-	const number = Math.floor(n / 12)
-	return `${letter}${number}`
-}
+import synth from "./noise"
+import { DragMouseEvent } from "./DragMouseEvent"
+import { DragTouchEvent } from "./DragTouchEvent"
 
 const keyboard = ["a", "s", "d", "f", "g", "h", "j", "k", "l"]
 
-export type PlayMouseEvent = React.MouseEvent<Element> | MouseEvent
-export type PlayTouchEvent = React.TouchEvent<Element> | TouchEvent
-
 interface RenderProps {
-	onMouseDown(e: PlayMouseEvent): void
-	onTouchStart(e: PlayTouchEvent): void
+	onMouseDown(e: DragMouseEvent): void
+	onTouchStart(e: DragTouchEvent): void
 }
 
 interface PlayableProps {
@@ -149,7 +104,7 @@ export default class Playable extends Component<PlayableProps> {
 
 	triggerAttack() {
 		this.down.set(true)
-		synthStore.pressed.update(pressed => {
+		pressedNotes.update(pressed => {
 			pressed[this.props.note] = true
 			return pressed
 		})
@@ -158,7 +113,7 @@ export default class Playable extends Component<PlayableProps> {
 
 	triggerRelease() {
 		this.down.set(false)
-		synthStore.pressed.update(pressed => {
+		pressedNotes.update(pressed => {
 			delete pressed[this.props.note]
 			return pressed
 		})
@@ -170,7 +125,7 @@ export default class Playable extends Component<PlayableProps> {
 		this.startMouseListener()
 	}
 
-	currentTouch = (e: PlayTouchEvent) => {
+	currentTouch = (e: DragTouchEvent) => {
 		const touches = e.changedTouches
 		for (let i = 0; i < touches.length; i++) {
 			const touch = touches[i]
@@ -180,7 +135,7 @@ export default class Playable extends Component<PlayableProps> {
 		}
 	}
 
-	handleTouchStart = (e: PlayTouchEvent) => {
+	handleTouchStart = (e: DragTouchEvent) => {
 		const touch = e.changedTouches[0]
 		this.touchId.set(touch.identifier)
 		this.triggerAttack()

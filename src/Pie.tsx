@@ -2,95 +2,16 @@ import * as React from "react"
 import Component from "reactive-magic/component"
 import Playable from "./playable"
 import Rotatable from "./Rotatable"
-import colorStore from "./Color"
-import synthStore from "./Synth"
-import { modPos, modMinus } from "./mod-math"
+import primary from "./primary"
+import pressedNotes from "./pressedNotes"
+import modMinus from "./modMinus"
+import modPos from "./modPos"
 import ScaleStore from "./Scale"
 import SizeStore from "./Size"
+import Slice from "./Slice"
 
 // padding of the outer ring for spinning
 const padding = 0.4
-
-function mergeStyles(a, b) {
-	if (a.transform && b.transform) {
-		return { ...a, ...b, transform: [a.transform, b.transform].join(" ") }
-	}
-	return { ...a, ...b }
-}
-
-interface SliceProps {
-	onMouseDown: any
-	onTouchStart: any
-	scaleStore: ScaleStore
-	on: boolean
-	pressed: boolean
-	offset: number
-	rotating: boolean
-	onClick(e: any): void
-}
-
-class Slice extends Component<SliceProps> {
-	// source: https://hackernoon.com/a-simple-pie-chart-in-svg-dbdd653b6936
-
-	view({
-		on,
-		pressed,
-		offset,
-		onClick,
-		onMouseDown,
-		onTouchStart,
-		rotating,
-		scaleStore,
-	}: SliceProps) {
-		const i = offset
-
-		const semitonesPerOctave = scaleStore.semitonesPerOctave.get()
-		// we have spacer arc
-		const arc = 1 / semitonesPerOctave
-		const spaceArc = 1 / 500
-		const noteArc = arc - spaceArc
-
-		// compute the path of the slice
-		const startX = Math.cos(2 * Math.PI * arc * i)
-		const startY = Math.sin(2 * Math.PI * arc * i)
-		const endX = Math.cos(2 * Math.PI * (arc * i + noteArc))
-		const endY = Math.sin(2 * Math.PI * (arc * i + noteArc))
-		const spaceX = Math.cos(2 * Math.PI * (arc * i + noteArc + spaceArc))
-		const spaceY = Math.sin(2 * Math.PI * (arc * i + noteArc + spaceArc))
-		const notePathData = [
-			`M ${startX} ${startY}`, // Move
-			`A 1 1 0 0 1 ${endX} ${endY}`, // Arc
-			`L 0 0`, // Line
-		].join(" ")
-		const spacePathData = [
-			`M ${endX} ${endY}`, // Move
-			`A 1 1 0 0 1 ${spaceX} ${spaceY}`, // Arc
-			`L 0 0`, // Line
-		].join(" ")
-
-		const primaryColor = colorStore.primary.get()
-		const accentColor = colorStore.accent.get()
-		return (
-			<g
-				onClick={onClick}
-				onMouseDown={onMouseDown}
-				onTouchStart={onTouchStart}
-			>
-				<path
-					d={notePathData}
-					fill={
-						i === modPos(scaleStore.semitoneOffset.get(), semitonesPerOctave)
-							? accentColor
-							: primaryColor
-					}
-					opacity={pressed ? 1 : on ? 0.6 : 0.2}
-					style={{ cursor: rotating ? "all-scroll" : "pointer" }}
-				/>
-				<path key={-i - 1} d={spacePathData} fill="transparent" />
-			</g>
-		)
-	}
-}
 
 export interface PieProps {
 	scaleStore: ScaleStore
@@ -171,9 +92,6 @@ export default class Pie extends Component<PieProps> {
 	}) {
 		const notes = scaleStore.notes.get()
 		const semitonesPerOctave = scaleStore.semitonesPerOctave.get()
-		const spaceArc = 1 / 500
-		const arc = 1 / semitonesPerOctave
-		const noteArc = arc - spaceArc
 		return notes.map((on, i) => {
 			// the circle spins so we need to offset the note index as well.
 			const noteIndex = modPos(
@@ -186,7 +104,7 @@ export default class Pie extends Component<PieProps> {
 				scaleStore.semitoneOffset.get()
 
 			let pressed = false
-			const keys = Object.keys(synthStore.pressed.get())
+			const keys = Object.keys(pressedNotes.get())
 			keys.forEach(pressedNote => {
 				if (
 					modPos(parseInt(pressedNote), semitonesPerOctave) ===
@@ -239,7 +157,7 @@ export default class Pie extends Component<PieProps> {
 							cy="0"
 							r={l / 2}
 							fill="transparent"
-							stroke={colorStore.primary.get()}
+							stroke={primary.get()}
 							strokeWidth={0.01}
 							opacity={0.2}
 							style={{ cursor: "all-scroll" }}

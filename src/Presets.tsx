@@ -1,42 +1,9 @@
 import * as React from "react"
-import { Value } from "reactive-magic"
 import Component from "reactive-magic/component"
-import ColorStore from "./Color"
-import SizeStore from "./Size"
-import appStore from "./App"
-
-interface PresetButtonProps {
-	onClick?: (e: any) => void
-	active?: boolean
-}
-
-class PresetButton extends Component<PresetButtonProps> {
-	getStyle({ active }): React.CSSProperties {
-		return {
-			width: SizeStore.presetButtonDiameter.get(),
-			height: SizeStore.presetButtonDiameter.get(),
-			borderRadius: SizeStore.presetButtonDiameter.get(),
-			border: `1px solid ${ColorStore.primary.get()}`,
-			color: active ? ColorStore.background.get() : ColorStore.primary.get(),
-			backgroundColor: active
-				? ColorStore.primary.get()
-				: ColorStore.background.get(),
-			opacity: active ? 1 : 0.4,
-			display: "flex",
-			alignItems: "center",
-			justifyContent: "center",
-			fontFamily: "sans-serif",
-		}
-	}
-
-	view({ onClick, active }) {
-		return (
-			<div onClick={onClick} style={this.getStyle({ active })}>
-				{this.props.children}
-			</div>
-		)
-	}
-}
+import PresetButton from "./PresetButton"
+import scales from "./scales"
+import scaleIndex from "./scaleIndex"
+import selectScale from "./selectScale"
 
 export default class ScalePresets extends Component<{}> {
 	getStyle(): React.CSSProperties {
@@ -48,8 +15,8 @@ export default class ScalePresets extends Component<{}> {
 	}
 
 	view() {
-		const n = appStore.scales.length
-		const activeIndex = appStore.scaleIndex.get()
+		const n = scales.length
+		const activeIndex = scaleIndex.get()
 		const buttons = Array(n)
 			.fill(0)
 			.map((_, i) => {
@@ -58,7 +25,7 @@ export default class ScalePresets extends Component<{}> {
 						key={i}
 						active={i === activeIndex}
 						onClick={() => {
-							appStore.selectScale(i)
+							selectScale(i)
 						}}
 					>
 						{i}
